@@ -38,9 +38,8 @@
         <a href="{% url 'crear_alumno' %}">+ Nuevo Alumno</a>
         <a href="{% url 'listar_alumnos' %}">Ver Alumnos</a>
         <a href="{% url 'listar_examenes' %}">Exámenes</a>
-        <a href="{% url 'listar_pagos' %}">Ver pagos</a>
+        <a href="{% url 'listar_pagos' %}">Pagos</a>
         <a href="{% url 'logout' %}">Cerrar sesión</a>
-        
     </div>
 
     <div class="content">
@@ -50,19 +49,6 @@
             <h2>{{ dojo.nombre }}</h2>
             <p>Ubicación: {{ dojo.ubicacion }}</p>
         {% endif %}
-
-        <h3>Alumnos:</h3>
-        <ul>
-            {% for alumno in dojo.alumnos.all %}
-                <li>
-                    {{ alumno.nombre }} {{ alumno.apellido }} —
-                    <a href="{% url 'editar_alumno' alumno.pk %}">Editar</a> |
-                    <a href="{% url 'eliminar_alumno' alumno.pk %}">Eliminar</a>
-                </li>
-            {% empty %}
-                <li>No hay alumnos registrados.</li>
-            {% endfor %}
-        </ul>
     </div>
 </body>
 </html>

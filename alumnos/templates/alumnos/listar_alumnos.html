@@ -3,15 +3,87 @@
 <head>
     <meta charset="UTF-8">
     <title>Lista de Alumnos</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: #0e0e0e;
+            color: #e0e0e0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: #00ffe7;
+            text-shadow: 0 0 10px #00ffe7;
+        }
+
+        a {
+            text-decoration: none;
+            color: #00ffe7;
+            margin: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        a:hover {
+            text-shadow: 0 0 5px #00ffe7;
+        }
+
+        ul {
+            list-style: none;
+            margin-top: 2rem;
+            width: 100%;
+            max-width: 500px;
+            background: #1a1a1a;
+            border-radius: 10px;
+            padding: 1rem;
+            box-shadow: 0 0 15px rgba(0, 255, 231, 0.1);
+        }
+
+        li {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid #2a2a2a;
+        }
+
+        li:last-child {
+            border-bottom: none;
+        }
+
+        .acciones {
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .acciones a {
+            margin-right: 10px;
+        }
+    </style>
 </head>
 <body>
     <h1>Alumnos del Dojo</h1>
     <a href="{% url 'dashboard_dojo' %}">← Volver al Dashboard</a>
-
     <a href="{% url 'crear_alumno' %}">+ Nuevo Alumno</a>
+
     <ul>
         {% for alumno in alumnos %}
-            <li>{{ alumno.nombre }} {{ alumno.apellido }}</li>
+            <li>
+                {{ alumno.nombre }} {{ alumno.apellido }}
+                <div class="acciones">
+                    <a href="{% url 'editar_alumno' alumno.pk %}">Editar</a> |
+                    <a href="{% url 'eliminar_alumno' alumno.pk %}">Eliminar</a>
+                </div>
+            </li>
         {% empty %}
             <li>No hay alumnos registrados.</li>
         {% endfor %}
