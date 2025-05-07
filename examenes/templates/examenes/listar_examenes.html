@@ -1,148 +1,371 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Lista de Exámenes</title>
-  <style>
-    :root {
-      --rojo-pastel: #cc5c5c;
-      --rojo-suave: #a94442;
-      --fondo-claro: #f9f9f9;
-      --texto-claro: #333;
-      --gris-claro: #f2f2f2;
-      --gris-borde: #ddd;
-      --gris-texto: #666;
-      --gris-vacio: #999;
-
-      --fondo-oscuro: #1e1e1e;
-      --gris-oscuro: #2a2a2a;
-      --texto-oscuro: #e0e0e0;
-      --gris-borde-oscuro: #444;
-    }
-
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: var(--fondo-claro);
-      color: var(--texto-claro);
-      margin: 0;
-      padding: 2rem;
-      transition: background-color 0.3s, color 0.3s;
-    }
-
-    body.dark {
-      background-color: var(--fondo-oscuro);
-      color: var(--texto-oscuro);
-    }
-
-    h1 {
-      color: var(--rojo-pastel);
-      border-bottom: 2px solid var(--gris-borde);
-      padding-bottom: 0.5rem;
-      margin-bottom: 1.5rem;
-    }
-
-    body.dark h1 {
-      border-color: var(--gris-borde-oscuro);
-    }
-
-    a {
-      text-decoration: none;
-      color: var(--rojo-suave);
-      font-weight: 500;
-    }
-
-    a:hover {
-      text-decoration: underline;
-    }
-
-    .top-links {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1.5rem;
-    }
-
-    .toggle-btn {
-      background-color: transparent;
-      border: 1px solid var(--rojo-suave);
-      padding: 0.3rem 0.8rem;
-      border-radius: 5px;
-      cursor: pointer;
-      color: var(--rojo-suave);
-      font-size: 0.9rem;
-    }
-
-    ul {
-      list-style: none;
-      padding: 0;
-    }
-
-    li {
-      background-color: var(--gris-claro);
-      border: 1px solid var(--gris-borde);
-      padding: 1rem;
-      margin-bottom: 0.8rem;
-      border-left: 6px solid var(--rojo-pastel);
-      border-radius: 4px;
-    }
-
-    body.dark li {
-      background-color: var(--gris-oscuro);
-      border-color: var(--gris-borde-oscuro);
-    }
-
-    li span {
-      font-weight: bold;
-      color: var(--gris-texto);
-    }
-
-    .acciones a {
-      margin-right: 1rem;
-      font-size: 0.95rem;
-    }
-
-    .empty {
-      color: var(--gris-vacio);
-      font-style: italic;
-    }
-
-    body.dark .empty {
-      color: #bbb;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Exámenes</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #8b0000; /* Rojo oscuro - tradición */
+            --secondary-color: #222222; /* Negro profundo para el sidebar */
+            --accent-color: #e0a800; /* Dorado - prestigio */
+            --light-bg: #f5f5f5;
+            --white-color: #ffffff;
+            --text-color: #333333;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            display: flex;
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--light-bg);
+            height: 100vh;
+            overflow: hidden;
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            background-color: var(--secondary-color);
+            color: var(--white-color);
+            height: 100vh;
+            padding: 20px;
+            overflow-y: auto;
+            transition: all 0.3s ease;
+        }
+        
+        .sidebar h2 {
+            color: var(--white-color);
+            font-size: 1.5rem;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .sidebar h2 i {
+            color: var(--accent-color);
+        }
+        
+        .sidebar a {
+            display: flex;
+            align-items: center;
+            color: var(--white-color);
+            text-decoration: none;
+            padding: 12px 15px;
+            margin: 8px 0;
+            border-radius: 6px;
+            transition: all 0.3s;
+            font-size: 0.95rem;
+        }
+        
+        .sidebar a i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+        
+        .sidebar a:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            transform: translateX(5px);
+        }
+        
+        .sidebar a.active, .sidebar a.new-student {
+            background-color: var(--primary-color);
+        }
+        
+        .sidebar a.new-student {
+            margin-top: 20px;
+            background-color: var(--accent-color);
+            color: var(--secondary-color);
+            font-weight: 600;
+        }
+        
+        .sidebar a.new-student:hover {
+            background-color: #c09100;
+        }
+        
+        .sidebar a.logout {
+            margin-top: 40px;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .sidebar a.logout:hover {
+            background-color: rgba(220, 53, 69, 0.8);
+        }
+        
+        /* Content Area */
+        .content {
+            flex-grow: 1;
+            padding: 30px;
+            overflow-y: auto;
+            background-color: var(--light-bg);
+        }
+        
+        .content h1 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            font-size: 2rem;
+            border-bottom: 2px solid var(--accent-color);
+            padding-bottom: 10px;
+            display: inline-block;
+        }
+        
+        /* Estilos específicos para la lista de exámenes */
+        .action-bar {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 20px;
+        }
+        
+        .action-bar a {
+            background-color: var(--accent-color);
+            color: var(--secondary-color);
+            padding: 10px 15px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .action-bar a:hover {
+            background-color: #c09100;
+            transform: translateY(-2px);
+        }
+        
+        .examen-list {
+            list-style: none;
+        }
+        
+        .examen-item {
+            background-color: var(--white-color);
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            border-left: 5px solid var(--primary-color);
+            transition: all 0.3s ease;
+        }
+        
+        .examen-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .examen-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .examen-titulo {
+            font-weight: bold;
+            font-size: 1.1rem;
+            color: var(--secondary-color);
+        }
+        
+        .examen-fecha {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .examen-acciones {
+            margin-top: 10px;
+            display: flex;
+            gap: 15px;
+        }
+        
+        .examen-acciones a {
+            color: var(--text-color);
+            text-decoration: none;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.2s;
+        }
+        
+        .examen-acciones a:hover {
+            color: var(--primary-color);
+        }
+        
+        .empty-state {
+            background-color: var(--white-color);
+            border-radius: 8px;
+            padding: 30px;
+            text-align: center;
+            color: #999;
+            font-style: italic;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 80px;
+                padding: 20px 10px;
+            }
+            
+            .sidebar h2 span {
+                display: none;
+            }
+            
+            .sidebar a span {
+                display: none;
+            }
+            
+            .sidebar a {
+                justify-content: center;
+                padding: 15px 0;
+            }
+            
+            .sidebar a i {
+                margin-right: 0;
+                font-size: 1.2rem;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+            
+            .examen-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 5px;
+            }
+            
+            .examen-acciones {
+                flex-wrap: wrap;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            body {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                height: auto;
+                padding: 10px;
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 5px;
+            }
+            
+            .sidebar h2 {
+                width: 100%;
+                text-align: center;
+                margin-bottom: 10px;
+                padding-bottom: 10px;
+                justify-content: center;
+            }
+            
+            .sidebar a {
+                padding: 10px;
+                margin: 0;
+                font-size: 0.8rem;
+            }
+            
+            .content {
+                padding: 15px;
+                height: calc(100vh - 140px);
+            }
+        }
+    </style>
 </head>
 <body>
-  <h1>Lista de Exámenes</h1>
-
-  <div class="top-links">
-    <a href="{% url 'dashboard_dojo' %}">← Volver al Dashboard</a>
-    <div>
-      <a href="{% url 'crear_examen' %}">+ Nuevo Examen</a>
-      <button class="toggle-btn" onclick="toggleDarkMode()">🌙 Modo Nocturno</button>
+    <div class="sidebar">
+        <h2><i class="fas fa-karate"></i> <span>Menú</span></h2>
+        
+        <a href="{% url 'crear_alumno' %}" class="new-student">
+            <i class="fas fa-user-plus"></i>
+            <span>+ Nuevo Alumno</span>
+        </a>
+        <a href="{% url 'listar_alumnos' %}">
+            <i class="fas fa-users"></i>
+            <span>Ver Alumnos</span>
+        </a>
+        <a href="{% url 'listar_examenes' %}" class="active">
+            <i class="fas fa-award"></i>
+            <span>Exámenes</span>
+        </a>
+        <a href="{% url 'listar_pagos' %}">
+            <i class="fas fa-money-bill-wave"></i>
+            <span>Pagos</span>
+        </a>
+        <a href="{% url 'logout' %}" class="logout">
+            <i class="fas fa-sign-out-alt"></i>
+            <span>Cerrar sesión</span>
+        </a>
     </div>
-  </div>
-
-  <ul>
-    {% for examen in examenes %}
-      <li>
-        <span>{{ examen.titulo }}</span> – {{ examen.fecha }}
-        <div class="acciones">
-          <a href="{% url 'editar_examen' examen.id %}">Editar</a>
-          <a href="{% url 'eliminar_examen' examen.id %}">Eliminar</a>
-          <a href="{% url 'asignar_examen' %}">Asignar</a>
-          <a href="{% url 'asignaciones_por_examen' examen.id %}">Ver asignados</a>
+    
+    <div class="content">
+        <h1>Lista de Exámenes</h1>
+        
+        <div class="action-bar">
+            <a href="{% url 'crear_examen' %}">
+                <i class="fas fa-plus"></i> Nuevo Examen
+            </a>
         </div>
-      </li>
-    {% empty %}
-      <li class="empty">No hay exámenes registrados.</li>
-    {% endfor %}
-  </ul>
+        
+        <ul class="examen-list">
+            {% for examen in examenes %}
+                <li class="examen-item">
+                    <div class="examen-header">
+                        <span class="examen-titulo">{{ examen.titulo }}</span>
+                        <span class="examen-fecha"><i class="far fa-calendar"></i> {{ examen.fecha }}</span>
+                    </div>
+                    <div class="examen-acciones">
+                        <a href="{% url 'editar_examen' examen.id %}">
+                            <i class="fas fa-edit"></i> Editar
+                        </a>
+                        <a href="{% url 'eliminar_examen' examen.id %}">
+                            <i class="fas fa-trash"></i> Eliminar
+                        </a>
+                        <a href="{% url 'asignar_examen' %}">
+                            <i class="fas fa-user-check"></i> Asignar
+                        </a>
+                        <a href="{% url 'asignaciones_por_examen' examen.id %}">
+                            <i class="fas fa-list"></i> Ver asignados
+                        </a>
+                    </div>
+                </li>
+            {% empty %}
+                <div class="empty-state">
+                    <i class="fas fa-award fa-3x" style="color: #ddd; margin-bottom: 15px;"></i>
+                    <p>No hay exámenes registrados.</p>
+                </div>
+            {% endfor %}
+        </ul>
+    </div>
 
-  <script>
-    function toggleDarkMode() {
-      document.body.classList.toggle('dark');
-    }
-  </script>
+    <script>
+        // Script para marcar el menú activo basado en la URL actual
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentPath = window.location.pathname;
+            const menuLinks = document.querySelectorAll('.sidebar a');
+            
+            menuLinks.forEach(link => {
+                if (link.getAttribute('href') === currentPath) {
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
 </body>
 </html>
