@@ -1,29 +1,139 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-    <title>Asignaciones - {{ examen.titulo }}</title>
+  <meta charset="UTF-8">
+  <title>Asignaciones - {{ examen.titulo }}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    :root {
+      --rojo-pastel: #cc5c5c;
+      --rojo-suave: #a94442;
+      --fondo-claro: #f9f9f9;
+      --texto-claro: #333;
+      --gris-borde: #ddd;
+      --gris-input: #f2f2f2;
+
+      --fondo-oscuro: #1e1e1e;
+      --gris-oscuro: #2a2a2a;
+      --texto-oscuro: #e0e0e0;
+      --gris-borde-oscuro: #444;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--fondo-claro);
+      color: var(--texto-claro);
+      margin: 0;
+      padding: 2rem;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    body.dark {
+      background-color: var(--fondo-oscuro);
+      color: var(--texto-oscuro);
+    }
+
+    h2 {
+      text-align: center;
+      color: var(--rojo-pastel);
+      margin-bottom: 2rem;
+    }
+
+    ul {
+      list-style-type: none;
+      padding: 0;
+      max-width: 800px;
+      margin: 0 auto 2rem auto;
+    }
+
+    li {
+      background-color: var(--gris-input);
+      border: 1px solid var(--gris-borde);
+      padding: 1rem;
+      margin-bottom: 1rem;
+      border-radius: 8px;
+    }
+
+    body.dark li {
+      background-color: var(--gris-oscuro);
+      border-color: var(--gris-borde-oscuro);
+    }
+
+    li a {
+      margin: 0 0.4rem;
+      color: var(--rojo-suave);
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    li a:hover {
+      text-decoration: underline;
+    }
+
+    .volver {
+      display: block;
+      text-align: center;
+      margin-top: 2rem;
+      color: var(--rojo-suave);
+      text-decoration: none;
+    }
+
+    .volver:hover {
+      text-decoration: underline;
+    }
+
+    .top-bar {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 1rem;
+    }
+
+    .toggle-btn {
+      background-color: transparent;
+      border: 1px solid var(--rojo-suave);
+      padding: 0.3rem 0.8rem;
+      border-radius: 5px;
+      cursor: pointer;
+      color: var(--rojo-suave);
+      font-size: 0.9rem;
+    }
+
+    p {
+      text-align: center;
+    }
+  </style>
 </head>
 <body>
-    <h2>Alumnos asignados al examen: {{ examen.titulo }}</h2>
+  <div class="top-bar">
+    <button class="toggle-btn" onclick="toggleDarkMode()">🌙 Modo Nocturno</button>
+  </div>
 
-    {% if asignaciones %}
-        <ul>
-            {% for asignacion in asignaciones %}
-                <li>
-                    {{ asignacion.alumno }} — Nota: {{ asignacion.nota }} — Aprobado: {{ asignacion.aprobado }}
-                    |
-                    <a href="{% url 'evaluar_examen' asignacion.id %}">Evaluar</a>
-                    |
-                    <a href="{% url 'editar_asignacion' asignacion.id %}">Editar</a>
-                    |
-                    <a href="{% url 'eliminar_asignacion' asignacion.id %}">Eliminar</a>
-                </li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <p>No hay alumnos asignados a este examen.</p>
-    {% endif %}
+  <h2>Alumnos asignados al examen: {{ examen.titulo }}</h2>
 
-    <a href="{% url 'listar_examenes' %}">← Volver a exámenes</a>
+  {% if asignaciones %}
+    <ul>
+      {% for asignacion in asignaciones %}
+        <li>
+          <strong>{{ asignacion.alumno }}</strong> — Nota: {{ asignacion.nota }} — Aprobado: {{ asignacion.aprobado }}
+          <br>
+          <a href="{% url 'evaluar_examen' asignacion.id %}">Evaluar</a>
+          |
+          <a href="{% url 'editar_asignacion' asignacion.id %}">Editar</a>
+          |
+          <a href="{% url 'eliminar_asignacion' asignacion.id %}">Eliminar</a>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>No hay alumnos asignados a este examen.</p>
+  {% endif %}
+
+  <a class="volver" href="{% url 'listar_examenes' %}">← Volver a exámenes</a>
+
+  <script>
+    function toggleDarkMode() {
+      document.body.classList.toggle('dark');
+    }
+  </script>
 </body>
 </html>

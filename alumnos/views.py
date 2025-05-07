@@ -1,14 +1,28 @@
 # alumnos/views.py
+    
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Alumno
 from .forms import AlumnoForm
 from django.contrib.auth.decorators import login_required
+from django.db.models import Q
 
 # Vista para listar alumnos del dojo
 @login_required
 def listar_alumnos(request):
-    alumnos = Alumno.objects.filter(dojo=request.user.dojo)
-    return render(request, 'alumnos/listar_alumnos.html', {'alumnos': alumnos})
+    query = request.GET.get('q', '')
+    if query:
+        alumnos = Alumno.objects.filter(
+            Q(nombre__icontains=query) | Q(apellido__icontains=query),
+            dojo=request.user.dojo
+        )
+    else:
+        alumnos = Alumno.objects.filter(dojo=request.user.dojo)
+
+    return render(request, 'alumnos/listar_alumnos.html', {
+        'alumnos': alumnos,
+        'query': query,
+        'result_count': alumnos.count() if query else None
+    })
 
 # Vista para crear un alumno
 @login_required

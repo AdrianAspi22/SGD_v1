@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Lista de Alumnos</title>
+    <title>Control de Alumnos - Dojo de Karate</title>
     <style>
         * {
             margin: 0;
@@ -10,83 +10,281 @@
             box-sizing: border-box;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-
+        
         body {
-            background: #0e0e0e;
-            color: #e0e0e0;
+            background: #f5f5f5;
+            color: #333;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            background: #b71c1c;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 8px 8px 0 0;
             display: flex;
-            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        
+        .header-left {
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo {
+            width: 50px;
+            height: 50px;
+            background: #f5f5f5;
+            border-radius: 50%;
+            display: flex;
             align-items: center;
             justify-content: center;
-            min-height: 100vh;
-            padding: 2rem;
+            margin-right: 15px;
         }
-
-        h1 {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-            color: #00ffe7;
-            text-shadow: 0 0 10px #00ffe7;
+        
+        .logo img {
+            width: 35px;
+            height: 35px;
         }
-
-        a {
+        
+        .title {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        
+        .search-box {
+            display: flex;
+            margin-top: 15px;
+            padding: 10px;
+            background: #f0f0f0;
+            border-radius: 0;
+            border: 1px solid #ddd;
+        }
+        
+        .search-input {
+            flex-grow: 1;
+            padding: 8px 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px 0 0 4px;
+            font-size: 14px;
+        }
+        
+        .search-button {
+            padding: 8px 15px;
+            background: #333;
+            color: white;
+            border: none;
+            border-radius: 0 4px 4px 0;
+            cursor: pointer;
+        }
+        
+        .register-button {
+            display: block;
+            padding: 8px 15px;
+            background: #333;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            margin-left: 10px;
             text-decoration: none;
-            color: #00ffe7;
-            margin: 0.5rem;
-            transition: all 0.3s ease;
+            font-size: 14px;
+            cursor: pointer;
         }
-
-        a:hover {
-            text-shadow: 0 0 5px #00ffe7;
+        
+        .search-result {
+            background: #e0f7e0;
+            padding: 10px;
+            border-radius: 0;
+            margin-top: 0;
+            font-size: 14px;
+            color: #2e7d32;
         }
-
-        ul {
-            list-style: none;
-            margin-top: 2rem;
+        
+        table {
             width: 100%;
-            max-width: 500px;
-            background: #1a1a1a;
-            border-radius: 10px;
-            padding: 1rem;
-            box-shadow: 0 0 15px rgba(0, 255, 231, 0.1);
+            border-collapse: collapse;
+            margin-top: 0;
+            background: white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        th {
+            background: #333;
+            color: white;
+            text-align: left;
+            padding: 12px 15px;
+        }
+        
+        td {
+            padding: 10px 15px;
+            border-bottom: 1px solid #eee;
+            font-size: 14px;
+        }
+        
+        tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+        
+        .icon-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 30px;
+            height: 30px;
+            border-radius: 4px;
+            margin: 0 2px;
+            cursor: pointer;
+        }
+        
+        .edit-btn {
+            background: #1976d2;
+            color: white;
+        }
+        
+        .delete-btn {
+            background: #d32f2f;
+            color: white;
+        }
+        
+        .subject-icon, .status-icon {
+            width: 30px;
+            height: 30px;
+            background: #ffb74d;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+        
+        .status-icon {
+            background: #4caf50;
+        }
+        
+        .back-link {
+            display: inline-block;
+            margin-bottom: 15px;
+            color: #b71c1c;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        
+        .back-link:hover {
+            text-decoration: underline;
         }
 
-        li {
-            padding: 0.75rem 1rem;
-            border-bottom: 1px solid #2a2a2a;
+        /* Colores específicos para dojo de karate */
+        .header {
+            background: #b71c1c; /* Rojo oscuro tradicional de karate */
         }
-
-        li:last-child {
-            border-bottom: none;
+        
+        .register-button, .search-button {
+            background: #8A2BE2; /* Morado para botones */
         }
-
-        .acciones {
-            margin-top: 0.5rem;
-            font-size: 0.9rem;
+        
+        .register-button:hover, .search-button:hover {
+            background: #6A1B9A;
         }
-
-        .acciones a {
-            margin-right: 10px;
+        
+        th {
+            background: #000000; /* Negro para encabezados de tabla */
+        }
+        
+        .status-icon {
+            background: #4caf50; /* Verde para estado */
+        }
+        
+        .subject-icon {
+            background: #ffc107; /* Amarillo para materias/cinturones */
         }
     </style>
 </head>
 <body>
-    <h1>Alumnos del Dojo</h1>
-    <a href="{% url 'dashboard_dojo' %}">← Volver al Dashboard</a>
-    <a href="{% url 'crear_alumno' %}">+ Nuevo Alumno</a>
-
-    <ul>
-        {% for alumno in alumnos %}
-            <li>
-                {{ alumno.nombre }} {{ alumno.apellido }}
-                <div class="acciones">
-                    <a href="{% url 'editar_alumno' alumno.pk %}">Editar</a> |
-                    <a href="{% url 'eliminar_alumno' alumno.pk %}">Eliminar</a>
+    <div class="container">
+        <a href="{% url 'dashboard_dojo' %}" class="back-link">← Volver al Dashboard</a>
+        
+        <div class="header">
+            <div class="header-left">
+                <div class="logo">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="#b71c1c">
+                        <path d="M12 2L9 9H3l5 4-2 7 6-3 6 3-2-7 5-4h-6z"/>
+                    </svg>
                 </div>
-            </li>
-        {% empty %}
-            <li>No hay alumnos registrados , registra porfavorcito.</li>
-        {% endfor %}
-    </ul>
+                <div class="title">Control de alumnos</div>
+            </div>
+            <button class="register-button" onclick="location.href='{% url "crear_alumno" %}'">Registrar Alumno</button>
+        </div>
+        
+        <div class="search-box">
+            <form method="get" style="display: flex;">
+                <input type="text" name="q" class="search-input" placeholder="Buscar alumno..." value="{{ query }}">
+                <button type="submit" class="search-button">Buscar</button>
+            </form>
+        </div>
+        
+        {% if result_count is not None %}
+            <div class="search-result">
+                Búsqueda exitosa. Se {{ result_count|pluralize:"encontró,encontraron" }} {{ result_count }} coincidencia{{ result_count|pluralize }} con su búsqueda
+            </div>
+        {% endif %}        
+        <table>
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Matrícula</th>
+                    <th>Grupo</th>
+                    <th>Cinturón</th>
+                    <th>Estado</th>
+                    <th>Edición</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for alumno in alumnos %}
+                <tr>
+                    <td>{{ alumno.nombre }} {{ alumno.apellido }}</td>
+                    <td>{{ alumno.matricula }}</td>
+                    <td>{{ alumno.grupo }}</td>
+                    <td>
+                        <div class="subject-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="white">
+                                <path d="M12 2L2 7v10l10 5 10-5V7L12 2zm0 2.3L20 9v8l-8 4-8-4V9l8-4.7z"/>
+                            </svg>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="status-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="white">
+                                <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+                            </svg>
+                        </div>
+                    </td>
+                    <td>
+                        <a href="{% url 'editar_alumno' alumno.pk %}" class="icon-btn edit-btn">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="white">
+                                <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
+                            </svg>
+                        </a>
+                        <a href="{% url 'eliminar_alumno' alumno.pk %}" class="icon-btn delete-btn">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="white">
+                                <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
+                            </svg>
+                        </a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" style="text-align: center; padding: 20px;">No hay alumnos registrados, registra porfavorcito.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </body>
-</html>
+</html>  
