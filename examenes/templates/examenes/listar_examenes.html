@@ -1,33 +1,148 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Lista de Exámenes</title>
+  <style>
+    :root {
+      --rojo-pastel: #cc5c5c;
+      --rojo-suave: #a94442;
+      --fondo-claro: #f9f9f9;
+      --texto-claro: #333;
+      --gris-claro: #f2f2f2;
+      --gris-borde: #ddd;
+      --gris-texto: #666;
+      --gris-vacio: #999;
+
+      --fondo-oscuro: #1e1e1e;
+      --gris-oscuro: #2a2a2a;
+      --texto-oscuro: #e0e0e0;
+      --gris-borde-oscuro: #444;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--fondo-claro);
+      color: var(--texto-claro);
+      margin: 0;
+      padding: 2rem;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    body.dark {
+      background-color: var(--fondo-oscuro);
+      color: var(--texto-oscuro);
+    }
+
+    h1 {
+      color: var(--rojo-pastel);
+      border-bottom: 2px solid var(--gris-borde);
+      padding-bottom: 0.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    body.dark h1 {
+      border-color: var(--gris-borde-oscuro);
+    }
+
+    a {
+      text-decoration: none;
+      color: var(--rojo-suave);
+      font-weight: 500;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    .top-links {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .toggle-btn {
+      background-color: transparent;
+      border: 1px solid var(--rojo-suave);
+      padding: 0.3rem 0.8rem;
+      border-radius: 5px;
+      cursor: pointer;
+      color: var(--rojo-suave);
+      font-size: 0.9rem;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    li {
+      background-color: var(--gris-claro);
+      border: 1px solid var(--gris-borde);
+      padding: 1rem;
+      margin-bottom: 0.8rem;
+      border-left: 6px solid var(--rojo-pastel);
+      border-radius: 4px;
+    }
+
+    body.dark li {
+      background-color: var(--gris-oscuro);
+      border-color: var(--gris-borde-oscuro);
+    }
+
+    li span {
+      font-weight: bold;
+      color: var(--gris-texto);
+    }
+
+    .acciones a {
+      margin-right: 1rem;
+      font-size: 0.95rem;
+    }
+
+    .empty {
+      color: var(--gris-vacio);
+      font-style: italic;
+    }
+
+    body.dark .empty {
+      color: #bbb;
+    }
+  </style>
 </head>
 <body>
   <h1>Lista de Exámenes</h1>
 
-  <!-- Enlace para volver al dashboard del dojo -->
-  <a href="{% url 'dashboard_dojo' %}">← Volver al Dashboard</a>
+  <div class="top-links">
+    <a href="{% url 'dashboard_dojo' %}">← Volver al Dashboard</a>
+    <div>
+      <a href="{% url 'crear_examen' %}">+ Nuevo Examen</a>
+      <button class="toggle-btn" onclick="toggleDarkMode()">🌙 Modo Nocturno</button>
+    </div>
+  </div>
 
-  <a href="{% url 'crear_examen' %}">+ Nuevo Examen</a>
   <ul>
     {% for examen in examenes %}
       <li>
-        {{ examen.titulo }} - {{ examen.fecha }}
-        |
-        <a href="{% url 'editar_examen' examen.id %}">Editar</a>
-        |
-        <a href="{% url 'eliminar_examen' examen.id %}">Eliminar</a>
-        |
-        <a href="{% url 'asignar_examen' %}">Asignar</a>
-        |
-        <a href="{% url 'asignaciones_por_examen' examen.id %}">Ver asignados</a>
+        <span>{{ examen.titulo }}</span> – {{ examen.fecha }}
+        <div class="acciones">
+          <a href="{% url 'editar_examen' examen.id %}">Editar</a>
+          <a href="{% url 'eliminar_examen' examen.id %}">Eliminar</a>
+          <a href="{% url 'asignar_examen' %}">Asignar</a>
+          <a href="{% url 'asignaciones_por_examen' examen.id %}">Ver asignados</a>
+        </div>
       </li>
     {% empty %}
-      <li>No hay exámenes registrados.</li>
+      <li class="empty">No hay exámenes registrados.</li>
     {% endfor %}
   </ul>
+
+  <script>
+    function toggleDarkMode() {
+      document.body.classList.toggle('dark');
+    }
+  </script>
 </body>
 </html>

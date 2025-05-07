@@ -1,54 +1,131 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard de Dojo</title>
-    <style>
-        body {
-            display: flex;
-            margin: 0;
-            font-family: Arial, sans-serif;
-        }
-        .sidebar {
-            width: 220px;
-            background-color: #333;
-            color: white;
-            height: 100vh;
-            padding: 20px;
-        }
-        .sidebar a {
-            display: block;
-            color: white;
-            text-decoration: none;
-            margin: 10px 0;
-        }
-        .sidebar a:hover {
-            text-decoration: underline;
-        }
-        .content {
-            flex-grow: 1;
-            padding: 30px;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dashboard de Dojo</title>
+  <style>
+    :root {
+      --rojo-pastel: #cc5c5c;
+      --rojo-suave: #a94442;
+      --fondo-claro: #f9f9f9;
+      --texto-claro: #333;
+      --gris-borde: #ddd;
+      --gris-input: #f2f2f2;
+
+      --fondo-oscuro: #1e1e1e;
+      --gris-oscuro: #2a2a2a;
+      --texto-oscuro: #e0e0e0;
+      --gris-borde-oscuro: #444;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, sans-serif;
+      background-color: var(--fondo-claro);
+      color: var(--texto-claro);
+      display: flex;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    body.dark {
+      background-color: var(--fondo-oscuro);
+      color: var(--texto-oscuro);
+    }
+
+    .sidebar {
+      width: 240px;
+      background-color: var(--rojo-pastel);
+      color: white;
+      height: 100vh;
+      padding: 2rem 1.5rem;
+      box-sizing: border-box;
+    }
+
+    .sidebar h2 {
+      font-size: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .sidebar a {
+      display: block;
+      color: white;
+      text-decoration: none;
+      padding: 0.6rem 0;
+      font-size: 1rem;
+      transition: background 0.2s;
+    }
+
+    .sidebar a:hover {
+      background-color: rgba(255, 255, 255, 0.2);
+      border-radius: 5px;
+      padding-left: 0.5rem;
+    }
+
+    .content {
+      flex-grow: 1;
+      padding: 2rem 3rem;
+    }
+
+    .top-bar {
+      text-align: right;
+      margin-bottom: 1rem;
+    }
+
+    .toggle-btn {
+      background-color: transparent;
+      border: 1px solid var(--rojo-suave);
+      padding: 0.4rem 0.8rem;
+      border-radius: 5px;
+      cursor: pointer;
+      color: var(--rojo-suave);
+      font-size: 0.9rem;
+    }
+
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+
+    h2 {
+      font-size: 1.5rem;
+      color: var(--rojo-pastel);
+      margin-bottom: 0.5rem;
+    }
+
+    p {
+      font-size: 1rem;
+      margin-top: 0;
+    }
+  </style>
 </head>
 <body>
-    <div class="sidebar">
-        <h2>Menú</h2>
-        <a href="{% url 'crear_alumno' %}">+ Nuevo Alumno</a>
-        <a href="{% url 'listar_alumnos' %}">Ver Alumnos</a>
-        <a href="{% url 'listar_examenes' %}">Exámenes</a>
-        <a href="{% url 'listar_pagos' %}">Pagos</a>
-        <a href="{% url 'logout' %}">Cerrar sesión</a>
+  <div class="sidebar">
+    <h2>Menú</h2>
+    <a href="{% url 'crear_alumno' %}">+ Nuevo Alumno</a>
+    <a href="{% url 'listar_alumnos' %}">Ver Alumnos</a>
+    <a href="{% url 'listar_examenes' %}">Exámenes</a>
+    <a href="{% url 'listar_pagos' %}">Pagos</a>
+    <a href="{% url 'logout' %}">Cerrar sesión</a>
+  </div>
+
+  <div class="content">
+    <div class="top-bar">
+      <button class="toggle-btn" onclick="toggleDarkMode()">🌙 Modo Nocturno</button>
     </div>
 
-    <div class="content">
-        <h1>{{ message }}</h1>
+    <h1>{{ message }}</h1>
 
-        {% if dojo %}
-            <h2>{{ dojo.nombre }}</h2>
-            <p>Ubicación: {{ dojo.ubicacion }}</p>
-        {% endif %}
-    </div>
+    {% if dojo %}
+      <h2>{{ dojo.nombre }}</h2>
+      <p>Ubicación: {{ dojo.ubicacion }}</p>
+    {% endif %}
+  </div>
+
+  <script>
+    function toggleDarkMode() {
+      document.body.classList.toggle('dark');
+    }
+  </script>
 </body>
 </html>
