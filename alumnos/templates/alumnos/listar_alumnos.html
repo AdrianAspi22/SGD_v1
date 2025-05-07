@@ -217,10 +217,83 @@
                         <path d="M12 2L9 9H3l5 4-2 7 6-3 6 3-2-7 5-4h-6z"/>
                     </svg>
                 </div>
-            </li>
-        {% empty %}
-            <li>No hay alumnos registrados , registra porfavorcito.</li>
-        {% endfor %}
-    </ul>
+                <div class="title">Control de alumnos</div>
+            </div>
+            <button class="register-button" onclick="location.href='{% url "crear_alumno" %}'">Registrar Alumno</button>
+        </div>
+        
+        <div class="search-box">
+            <form method="get" style="display: flex;">
+                <input type="text" name="q" class="search-input" placeholder="Buscar alumno..." value="{{ query }}">
+                <button type="submit" class="search-button">Buscar</button>
+            </form>
+        </div>
+        
+        {% if result_count is not None %}
+            <div class="search-result">
+                Búsqueda exitosa. Se {{ result_count|pluralize:"encontró,encontraron" }} {{ result_count }} coincidencia{{ result_count|pluralize }} con su búsqueda
+            </div>
+        {% endif %}        
+        <table>
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Matrícula</th>
+                    <th>Grupo</th>
+                    <th>Cinturón</th>
+                    <th>Estado</th>
+                    <th>Edición</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for alumno in alumnos %}
+                <tr>
+                    <td>{{ alumno.nombre }} {{ alumno.apellido }}</td>
+                    <td>{{ alumno.matricula }}</td>
+                    <td>{{ alumno.grupo }}</td>
+                    <td>
+                        <div class="subject-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="white">
+                                <path d="M12 2L2 7v10l10 5 10-5V7L12 2zm0 2.3L20 9v8l-8 4-8-4V9l8-4.7z"/>
+                            </svg>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="status-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="white">
+                                <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+                            </svg>
+                        </div>
+                    </td>
+                    <td>
+                        <a href="{% url 'editar_alumno' alumno.pk %}" class="icon-btn edit-btn">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="white">
+                                <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
+                            </svg>
+                        </a>
+                        <a href="{% url 'eliminar_alumno' alumno.pk %}" class="icon-btn delete-btn" onclick="return confirmDeletion(event)">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="white">
+                                <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
+                            </svg>
+                        </a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" style="text-align: center; padding: 20px;">No hay alumnos registrados, registra porfavorcito.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <script>
+        function confirmDeletion(event) {
+            // Mostrar confirmación
+            var confirmation = confirm("¿Estás seguro de que deseas eliminar este alumno?");
+            if (!confirmation) {
+                event.preventDefault();  // Cancelar la acción si el usuario no confirma
+            }
+        }
+    </script>
 </body>
-</html>  
+</html>
