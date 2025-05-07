@@ -46,15 +46,21 @@ def editar_pago(request, pk):
     return render(request, 'pagos/editar_pago.html', {'form': form})
 
 
-# Vista para eliminar un pago existente
+# Vista para cambiar el estado de un pago existente
 @login_required
-def eliminar_pago(request, pago_id):
+def estado_pago(request, pago_id):
     dojo = request.user.dojo
     pago = get_object_or_404(Pago, id=pago_id, dojo=dojo)
 
     if request.method == 'POST':
-        pago.delete()
-        messages.success(request, 'Pago eliminado con éxito.')
+        nuevo_estado = request.POST.get('estado')
+        if nuevo_estado in ['Pagado', 'Pendiente', 'Cancelado']:
+            pago.estado = nuevo_estado
+            pago.save()
+            messages.success(request, 'Estado del pago actualizado correctamente.')
+        else:
+            messages.error(request, 'Estado inválido.')
         return redirect('listar_pagos')
 
-    return render(request, 'pagos/eliminar_pago.html', {'pago': pago})
+    return render(request, 'pagos/estado_pago.html', {'pago': pago})
+
