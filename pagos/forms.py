@@ -9,7 +9,7 @@ class PagoForm(forms.ModelForm):
     )
     class Meta:
         model = Pago
-        fields = ['alumno', 'monto', 'concepto', 'fecha_pago']
+        fields = ['alumno', 'concepto', 'monto', 'fecha_pago', 'estado_pago']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
