@@ -1,15 +1,106 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
+    <meta charset="UTF-8">
     <title>Editar Pago</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            background-color: #ffffff;
+            padding: 2rem 2.5rem;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.07);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        h2 {
+            margin-bottom: 1.8rem;
+            color: #222;
+            text-align: center;
+            font-size: 1.6rem;
+        }
+
+        form p {
+            margin-bottom: 1.2rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.3rem;
+            color: #555;
+            font-size: 0.95rem;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            background-color: #fafafa;
+            transition: border-color 0.3s ease;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            border-color: #4CAF50;
+            outline: none;
+        }
+
+        button {
+            width: 100%;
+            padding: 0.9rem;
+            margin-top: 1rem;
+            background-color: #2196F3;
+            color: white;
+            font-size: 1rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        button:hover {
+            background-color: #1976D2;
+        }
+
+        .cancel-link {
+            display: block;
+            text-align: center;
+            margin-top: 1.2rem;
+            text-decoration: none;
+            color: #888;
+            font-size: 0.95rem;
+        }
+
+        .cancel-link:hover {
+            color: #333;
+        }
+    </style>
 </head>
 <body>
-    <h2>Editar Pago</h2>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Actualizar</button>
-    </form>
-    <a href="{% url 'listar_pagos' %}">← Cancelar</a>
+    <div class="container">
+        <h2>Editar Pago</h2>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Actualizar</button>
+        </form>
+        <a href="{% url 'listar_pagos' %}" class="cancel-link">← Cancelar</a>
+    </div>
 </body>
 </html>

@@ -1,23 +1,148 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-    <title>Pagos del proceso </title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pagos del Proceso</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f7f8fa;
+            margin: 0;
+            padding: 40px 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background-color: #fff;
+            padding: 25px 30px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+            font-size: 1.8rem;
+        }
+
+        .nuevo-pago {
+            display: inline-block;
+            text-align: center;
+            margin-bottom: 20px;
+            color: #2196F3;
+            font-weight: bold;
+            text-decoration: none;
+            font-size: 1rem;
+        }
+
+        .nuevo-pago:hover {
+            color: #0b7dda;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        li {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #555;
+        }
+
+        li:last-child {
+            border-bottom: none;
+        }
+
+        .pago-info {
+            flex: 1;
+            color: #555;
+            font-size: 0.95rem;
+        }
+
+        .acciones a {
+            margin-left: 10px;
+            text-decoration: none;
+            color: #4CAF50;
+            font-size: 0.9rem;
+        }
+
+        .acciones a:hover {
+            color: #388e3c;
+        }
+
+        .acciones .eliminar {
+            color: #f44336;
+        }
+
+        .acciones .eliminar:hover {
+            color: #d32f2f;
+        }
+
+        .volver {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            color: #888;
+            text-decoration: none;
+            font-size: 0.95rem;
+        }
+
+        .volver:hover {
+            color: #333;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            .nuevo-pago {
+                font-size: 0.9rem;
+            }
+
+            .acciones a {
+                font-size: 0.85rem;
+            }
+        }
+    </style>
 </head>
 <body>
-    <h1>Listado de Pagos</h1>
-    <a href="{% url 'crear_pago' %}">+ Nuevo Pago</a>
-    <ul>
-        {% for pago in pagos %}
-            <li>
-                {{ pago.alumno }} — {{ pago.monto }} — {{ pago.concepto }} — {{ pago.fecha_pago }}
-                |
-                <a href="{% url 'editar_pago' pago.pk %}">Editar</a>
-                
-            </li>
-        {% empty %}
-            <li>No hay pagos registrados.</li>
-        {% endfor %}
-    </ul>
-    <a href="{% url 'dashboard_dojo' %}">← Volver al Dashboard</a>
+    <div class="container">
+        <h1>Listado de Pagos</h1>
+        <a href="{% url 'crear_pago' %}" class="nuevo-pago">+ Nuevo Pago</a>
+        <ul>
+            {% for pago in pagos %}
+                <li>
+                    <span class="pago-info">
+                        {{ pago.alumno }} — {{ pago.monto }} — {{ pago.concepto }} — {{ pago.fecha_pago }}
+                    </span>
+                    <span class="acciones">
+                        <a href="{% url 'editar_pago' pago.pk %}">Editar</a>
+                        <a href="{% url 'eliminar_pago' pago.pk %}" class="eliminar" onclick="return confirm('¿Estás seguro de que deseas eliminar este pago?');">Eliminar</a>
+                    </span>
+                </li>
+            {% empty %}
+                <li style="text-align:center; color:#999;">No hay pagos registrados.</li>
+            {% endfor %}
+        </ul>
+        <a href="{% url 'dashboard_dojo' %}" class="volver">← Volver al Dashboard</a>
+    </div>
 </body>
 </html>

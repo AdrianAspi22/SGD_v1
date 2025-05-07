@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Eliminar Pago</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f7fa;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            background-color: #fff;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 400px;
+            width: 100%;
+        }
+
+        h2 {
+            margin-bottom: 1rem;
+            color: #e53935;
+        }
+
+        p {
+            margin-bottom: 2rem;
+            color: #555;
+        }
+
+        form button {
+            background-color: #e53935;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+
+        form button:hover {
+            background-color: #c62828;
+        }
+
+        .cancel-link {
+            text-decoration: none;
+            color: #888;
+            font-size: 0.95rem;
+        }
+
+        .cancel-link:hover {
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>¿Eliminar Pago?</h2>
+        <p>¿Estás seguro que deseas eliminar el pago de <strong>{{ pago.alumno }}</strong> por <strong>S/. {{ pago.monto }}</strong>?</p>
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit">Sí, eliminar</button>
+            <a href="{% url 'listar_pagos' %}" class="cancel-link">Cancelar</a>
+        </form>
+    </div>
+</body>
+</html>
