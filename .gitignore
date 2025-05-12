@@ -1,4 +1,57 @@
-__pycache__/
+
+# Archivos de Python
 *.pyc
+__pycache__/
 *.pyo
+*.pyd
+
+# Entornos virtuales
+venv/
+env/
+ENV/
+
+# Archivos de configuración de IDEs
+.vscode/
+.idea/
+
+# Base de datos SQLite (si es usada solo localmente)
 *.sqlite3
+
+# Archivos de migración automáticos (opcional si no quieres incluir migraciones)
+# **NO RECOMENDADO ignorarlos si trabajas en equipo**
+# */migrations/*.py
+# */migrations/*.pyc
+
+# Archivos de entorno
+.env
+*.env
+
+# Archivos de logs
+*.log
+
+# Archivos de compilación (por ejemplo, si usas SCSS o JS compilado)
+staticfiles/
+static/
+media/
+
+# Archivos de coverage/testing
+htmlcov/
+.coverage
+.tox/
+.nox/
+.pytest_cache/
+coverage.xml
+*.cover
+
+# Archivos de Django cache
+*.pot
+*.mo
+*.po
+
+# Docker y otros temporales
+*.pid
+*.swp
+*.swo
+
+# MacOS
+.DS_Store
