@@ -12,5 +12,5 @@ class AlumnoForm(forms.ModelForm):
         model = Alumno
         fields = [
             'nombre', 'apellido', 'fecha_nacimiento',
-            'matricula', 'grupo', 'cinturon', 'estado'
+            'matricula', 'grupo', 'estado'
         ]
