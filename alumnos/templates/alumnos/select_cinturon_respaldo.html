@@ -1,0 +1,33 @@
+                    <select name="cinturon" class="filter-select">
+                        <option value="">Todos los cinturones</option>
+                        <optgroup label="Grados menores">
+                            <option value="10.º kyū: Blanco" {% if filtro_cinturon == "10.º kyū: Blanco" %}selected{% endif %}>10.º kyū: Blanco</option>
+                            <option value="9.º kyū: Amarillo" {% if filtro_cinturon == "9.º kyū: Amarillo" %}selected{% endif %}>9.º kyū: Amarillo</option>
+                            <option value="8.º kyū: Naranja" {% if filtro_cinturon == "8.º kyū: Naranja" %}selected{% endif %}>8.º kyū: Naranja</option>
+                            <option value="7.º kyū: Verde" {% if filtro_cinturon == "7.º kyū: Verde" %}selected{% endif %}>7.º kyū: Verde</option>
+                            <option value="6.º kyū: Azul" {% if filtro_cinturon == "6.º kyū: Azul" %}selected{% endif %}>6.º kyū: Azul</option>
+                            <option value="5.º kyū: Marrón" {% if filtro_cinturon == "5.º kyū: Marrón" %}selected{% endif %}>5.º kyū: Marrón</option>
+                            <option value="4.º kyū: Marrón" {% if filtro_cinturon == "4.º kyū: Marrón" %}selected{% endif %}>4.º kyū: Marrón</option>
+                            <option value="3.º kyū: Marrón" {% if filtro_cinturon == "3.º kyū: Marrón" %}selected{% endif %}>3.º kyū: Marrón</option>
+                            <option value="2.º kyū: Marrón" {% if filtro_cinturon == "2.º kyū: Marrón" %}selected{% endif %}>2.º kyū: Marrón</option>
+                            <option value="1.º kyū: Marrón" {% if filtro_cinturon == "1.º kyū: Marrón" %}selected{% endif %}>1.º kyū: Marrón</option>
+                        </optgroup>
+                        <optgroup label="Grados avanzados">
+                            {% for i in "12345678910"|make_list %}
+                                <option value="{{ i }}.º dan: Cinturón negro" {% if filtro_cinturon == i|stringformat:"s.º dan: Cinturón negro" %}selected{% endif %}>{{ i }}.º dan: Cinturón negro</option>
+                            {% endfor %}
+                        </optgroup>
+                    </select>
+
+
+
+                    <td>
+                        <div class="subject-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="white">
+                                <path d="M12 2L2 7v10l10 5 10-5V7L12 2zm0 2.3L20 9v8l-8 4-8-4V9l8-4.7z"/>
+                                <td>
+                                    <div class="subject-icon" style="background: #666;">{{ alumno.cinturon }}</div>
+                                </td>
+                            </svg>
+                        </div>
+                    </td>

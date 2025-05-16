@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Lista de  Historial de Grados</title>
+</head>
+<body>
+    <a href="{% url 'crear_historial_grado' %}" class="btn btn-primary mb-3">Nuevo Historial</a>
+
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Alumno</th>
+                <th>Grado</th>
+                <th>Fecha de obtención</th>
+                <th>Observaciones</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in historial_grados %}
+            <tr>
+                <td>{{ item.id }}</td>
+                <td>{{ item.alumno }}</td>
+                <td>{{ item.grado }}</td>
+                <td>{{ item.fecha_obtencion }}</td>
+                <td>{{ item.observaciones|default:"-" }}</td>
+                <td>
+                    <a href="{% url 'editar_historial_grado' item.id %}" class="btn btn-sm btn-warning">Editar</a>
+                    <a href="{% url 'eliminar_historial_grado' item.id %}" class="btn btn-sm btn-danger">Eliminar</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="6">No hay registros.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

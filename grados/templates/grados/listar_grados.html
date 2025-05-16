@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Lista de Grados</title>
+</head>
+<body>
+    <h1>Lista de Grados</h1>
+    <a href="{% url 'crear_grado' %}">Crear nuevo grado</a>
+    <ul>
+        {% for grado in grados %}
+            <li>
+                {{ grado }} |
+                <a href="{% url 'editar_grado' grado.pk %}">Editar</a> |
+                <a href="{% url 'eliminar_grado' grado.pk %}">Eliminar</a>
+            </li>
+        {% empty %}
+            <li>No hay grados registrados.</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

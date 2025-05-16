@@ -1,0 +1,23 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h2>Confirmar eliminación</h2>
+    <p>¿Estás seguro de que deseas eliminar este historial de grado?</p>
+
+    <ul>
+        <li><strong>Alumno:</strong> {{ historial_grado.alumno }}</li>
+        <li><strong>Grado:</strong> {{ historial_grado.grado }}</li>
+        <li><strong>Fecha:</strong> {{ historial_grado.fecha_obtencion }}</li>
+    </ul>
+
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Eliminar</button>
+        <a href="{% url 'listar_historial_grados' %}" class="btn btn-secondary">Cancelar</a>
+    </form>
+</body>
+</html>

@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Eliminar Grado</title>
+</head>
+<body>
+    <h1>¿Estás seguro que deseas eliminar este grado?</h1>
+    <p>{{ grado }}</p>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit">Sí, eliminar</button>
+        <a href="{% url 'listar_grado' %}">Cancelar</a>
+    </form>
+</body>
+</html>

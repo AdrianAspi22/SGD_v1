@@ -33,4 +33,7 @@ urlpatterns = [
     path('dashboard_dojo/', dojo_views.dashboard_dojo, name='dashboard_dojo'),  # Vista para el dojo
     path('examenes/', include('examenes.urls')),  # URLs para la app exámenes
     path('pagos/', include('pagos.urls')), # URLs para la app pagos
+    #path('instructores/', include('instructores.urls')),  # URLs para la app instructores
+    path('grados/', include('grados.urls')),  # URLs para la app grados
+    #path('horarios/', include('horarios.urls')),  # URLs para la app horarios
 ]
