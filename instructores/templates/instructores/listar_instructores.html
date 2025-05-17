@@ -1,0 +1,40 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <!-- templates/instructores/listar_instructores.html -->
+<h1>Instructores</h1>
+
+<a href="{% url 'crear_instructor' %}">Crear nuevo instructor</a>
+
+<table border="1">
+    <tr>
+        <th>Nombre</th>
+        <th>DNI</th>
+        <th>Teléfono</th>
+        <th>Correo</th>
+        <th>Pago por hora</th>
+        <th>Acciones</th>
+    </tr>
+    {% for instructor in instructores %}
+    <tr>
+        <td>{{ instructor.nombres }} {{ instructor.apellidos }}</td>
+        <td>{{ instructor.dni }}</td>
+        <td>{{ instructor.telefono }}</td>
+        <td>{{ instructor.correo }}</td>
+        <td>S/. {{ instructor.pago_hora }}</td>
+        <td>
+            <a href="{% url 'editar_instructor' instructor.id %}">Editar</a> |
+            <a href="{% url 'eliminar_instructor' instructor.id %}">Eliminar</a>
+        </td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="6">No hay instructores registrados.</td></tr>
+    {% endfor %}
+</table>
+
+</body>
+</html>

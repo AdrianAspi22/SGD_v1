@@ -1,6 +1,7 @@
 from django.db import models
 # Create your models here.
 from alumnos.models import Alumno  # Importas tu modelo desde la app alumnos
+from dojos.models import Dojo  # Importas tu modelo desde la app dojos
 
 class Grado(models.Model):
     # Opciones para tipo de grado
@@ -16,7 +17,7 @@ class Grado(models.Model):
         ('internacional', 'Internacional'),
     ]
     ambito = models.CharField(max_length=20, choices=AMBITO_CHOICES, blank=True, null=True)
-
+    dojo = models.ForeignKey(Dojo, on_delete=models.CASCADE, related_name='grados')
     descripcion = models.TextField(blank=True, null=True)
 
     estado = models.BooleanField(default=True)

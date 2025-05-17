@@ -1,0 +1,20 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <!-- templates/instructores/confirmar_eliminar_instructor.html -->
+<h1>Eliminar Instructor</h1>
+
+<p>¿Estás seguro de que deseas eliminar al instructor: <strong>{{ instructor.nombres }} {{ instructor.apellidos }}</strong>?</p>
+
+<form method="post">
+    {% csrf_token %}
+    <button type="submit">Sí, eliminar</button>
+    <a href="{% url 'listar_instructores' %}">Cancelar</a>
+</form>
+
+</body>
+</html>
