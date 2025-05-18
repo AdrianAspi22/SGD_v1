@@ -9,19 +9,18 @@ from django.db.models import Q
 from django.core.paginator import Paginator
 
 
-# Vista para listar alumnos con filtros y paginación
 @login_required
 def listar_alumnos(request):
     query = request.GET.get('q', '')
     per_page = int(request.GET.get('per_page', 10))
 
-    # Filtros
+    # Filtros iniciales
+    filtros = Q(dojo=request.user.dojo)
+
     filtro_matricula = request.GET.get('matricula')
     filtro_grupo = request.GET.get('grupo')
     filtro_cinturon = request.GET.get('cinturon')
     filtro_estado = request.GET.get('estado')
-
-    filtros = Q(dojo=request.user.dojo)
 
     if query:
         filtros &= Q(nombre__icontains=query) | Q(apellido__icontains=query)
@@ -35,12 +34,11 @@ def listar_alumnos(request):
     if filtro_estado:
         filtros &= Q(estado=filtro_estado)
 
-    # Subquery para obtener los datos del último grado del alumno
     ultimos_grados = HistorialGrado.objects.filter(
         alumno=OuterRef('pk')
-    ).order_by('-fecha_obtencion')
+    ).order_by('-create_at')
 
-    alumnos_list = Alumno.objects.filter(filtros).annotate(
+    alumnos_qs = Alumno.objects.filter(filtros).annotate(
         grado_nivel=Subquery(ultimos_grados.values('grado__nivel')[:1]),
         grado_tipo=Subquery(ultimos_grados.values('grado__tipo')[:1]),
         grado_color=Subquery(ultimos_grados.values('grado__color')[:1]),
@@ -54,17 +52,13 @@ def listar_alumnos(request):
         )
     ).order_by('id')
 
-    # Filtrar por color si se aplicó el filtro
     if filtro_cinturon:
-        alumnos_list = alumnos_list.filter(grado_actual__iexact=filtro_cinturon)
+        alumnos_qs = alumnos_qs.filter(grado_actual__iexact=filtro_cinturon)
 
-    paginator = Paginator(alumnos_list, per_page)
+    paginator = Paginator(alumnos_qs, per_page)
     page_number = request.GET.get('page')
     alumnos = paginator.get_page(page_number)
 
-    
-
-    # Colores disponibles para filtro
     colores_grado_qs = Grado.objects.values('color', 'nivel', 'tipo').distinct()
 
     colores_grado = [
@@ -72,11 +66,12 @@ def listar_alumnos(request):
         for item in colores_grado_qs
     ]
 
+    total_resultados = alumnos_qs.count()
 
     return render(request, 'alumnos/listar_alumnos.html', {
         'alumnos': alumnos,
         'query': query,
-        'result_count': alumnos_list.count() if query else None,
+        'result_count': total_resultados,
         'per_page': per_page,
         'filtro_matricula': filtro_matricula,
         'filtro_grupo': filtro_grupo,
@@ -84,6 +79,9 @@ def listar_alumnos(request):
         'filtro_estado': filtro_estado,
         'colores_grado': colores_grado,
     })
+
+
+
 
 # Vista para crear un alumno
 @login_required

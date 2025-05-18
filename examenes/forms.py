@@ -1,27 +1,36 @@
 # examenes/forms.py
 from django import forms
 from .models import Examen, AlumnoExamen
-# examenes/forms.py (continúa en el mismo archivo)
-from alumnos.models import Alumno
+from grados.models import HistorialGrado
 
 class ExamenForm(forms.ModelForm):
-    fecha = forms.DateField(
-        widget=forms.DateInput(attrs={'type': 'date'})
-    )
     class Meta:
         model = Examen
-        fields = ['titulo', 'descripcion', 'fecha', 'monto_pago']
-
+        fields = [
+            'titulo',
+            'descripcion',
+            'fecha',
+            'hora',
+            'nota_aprobacion',
+            'monto_pago',
+            'instructor',
+        ]
+        widgets = {
+            'fecha': forms.DateInput(attrs={'type': 'date'}),
+            'hora': forms.TimeInput(attrs={'type': 'time'}),
+        }
 
 
 class AlumnoExamenForm(forms.ModelForm):
     class Meta:
         model = AlumnoExamen
-        fields = ['alumno', 'examen']
-
+        fields = [
+            'alumno',
+            'examen',
+        ]
 
 
 class EvaluarExamenForm(forms.ModelForm):
     class Meta:
         model = AlumnoExamen
-        fields = ['nota', 'aprobado']
+        fields = ['nota', 'observaciones']

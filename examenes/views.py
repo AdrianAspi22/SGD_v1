@@ -3,12 +3,16 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from .models import Examen, AlumnoExamen
 from .forms import ExamenForm, AlumnoExamenForm, EvaluarExamenForm
+from grados.models import HistorialGrado
+from grados.services import promover_si_corresponde
 
 # Vista para listar los exámenes
 @login_required
 def listar_examenes(request):
-    examenes = Examen.objects.all()
+    dojo = request.user.dojo  # Asumiendo que el usuario es instructor y tiene dojo
+    examenes = Examen.objects.filter(instructor__dojo=dojo)
     return render(request, 'examenes/listar_examenes.html', {'examenes': examenes})
+
 
 # Vista para crear un nuevo examen
 @login_required
@@ -89,6 +93,13 @@ def evaluar_examen(request, pk):
         form = EvaluarExamenForm(request.POST, instance=asignacion)
         if form.is_valid():
             form.save()
+            if asignacion.nota >= asignacion.examen.nota_aprobacion:
+                asignacion.aprobado = True
+                promover_si_corresponde(asignacion.alumno, asignacion.observaciones)
+            else:
+                asignacion.aprobado = False
+            asignacion.save()
+
             return redirect('asignaciones_por_examen', examen_id=asignacion.examen.id)
     else:
         form = EvaluarExamenForm(instance=asignacion)

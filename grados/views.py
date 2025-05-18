@@ -17,6 +17,9 @@ def crear_grado(request):
     if request.method == 'POST':
         form = GradoForm(request.POST)
         if form.is_valid():
+            grado = form.save(commit=False)
+            grado.dojo = request.user.dojo  # Asociar al dojo del usuario
+            grado.save()
             form.save()
             return redirect('listar_grados')
     else:

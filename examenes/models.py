@@ -26,6 +26,7 @@ class Examen(models.Model):
 class AlumnoExamen(models.Model):
     alumno = models.ForeignKey(Alumno, on_delete=models.CASCADE, related_name='examenes')
     examen = models.ForeignKey(Examen, on_delete=models.CASCADE, related_name='alumnos')
+    observaciones = models.TextField(blank=True, null=True)
     nota = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
     aprobado = models.BooleanField(default=False)
 
@@ -39,20 +40,3 @@ class AlumnoExamen(models.Model):
     def __str__(self):
         return f"{self.alumno} - {self.examen}"
 
-class Evaluacion(models.Model):
-    examen = models.ForeignKey(Examen, on_delete=models.CASCADE, related_name='evaluaciones')
-    nombre = models.CharField(max_length=200)
-    # models.py
-    nota = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
-    porcentaje = models.DecimalField(
-        max_digits=5,
-        decimal_places=2,
-        validators=[MinValueValidator(Decimal('0.00')), MaxValueValidator(Decimal('100.00'))]
-    )
-
-    estado = models.BooleanField(default=True)
-    create_at = models.DateTimeField(auto_now_add=True)
-    update_at = models.DateTimeField(auto_now=True)
-
-    def __str__(self):
-        return f"{self.nombre} ({self.porcentaje}%) - {self.examen.titulo}"
