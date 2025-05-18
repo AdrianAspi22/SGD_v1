@@ -15,4 +15,6 @@ urlpatterns = [
     path('asignaciones/nuevo/', views.asignar_examen, name='asignar_examen'),  # Para asignar un examen a un alumno
     path('asignaciones/editar/<int:pk>/', views.editar_asignacion, name='editar_asignacion'),  # Para editar asignación
     path('asignaciones/eliminar/<int:pk>/', views.eliminar_asignacion, name='eliminar_asignacion'),  # Para eliminar asignación
+
+    path('reporte-instructores/', views.reporte_instructores, name='reporte_instructores'),
 ]

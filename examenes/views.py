@@ -5,6 +5,8 @@ from .models import Examen, AlumnoExamen
 from .forms import ExamenForm, AlumnoExamenForm, EvaluarExamenForm
 from grados.models import HistorialGrado
 from grados.services import promover_si_corresponde
+from django.db.models import Count, Sum, F, Case, When, FloatField, Value
+from instructores.models import Instructor
 
 # Vista para listar los exámenes
 @login_required
@@ -113,3 +115,32 @@ def asignaciones_por_examen(request, examen_id):
         'examen': examen,
         'asignaciones': asignaciones,
     })
+
+
+
+
+def reporte_instructores(request):
+    instructores = (
+        Instructor.objects
+        .annotate(
+            cantidad_examenes=Count('examenes', distinct=True),
+            total_examenes=Count('examenes__alumnos', distinct=True),
+            aprobados=Sum(
+                Case(
+                    When(examenes__alumnos__aprobado=True, then=1),
+                    default=0,
+                    output_field=FloatField()
+                )
+            ),
+        )
+        .annotate(
+            porcentaje_aprobacion=Case(
+                When(total_examenes__gt=0, then=F('aprobados') * 100.0 / F('total_examenes')),
+                default=Value(0),
+                output_field=FloatField()
+            )
+        )
+        .order_by('-cantidad_examenes')
+        .values('id', 'nombres', 'cantidad_examenes', 'porcentaje_aprobacion')
+    )
+    return render(request, 'instructores/reporte_instructores.html', {'instructores': instructores})

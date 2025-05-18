@@ -1,0 +1,52 @@
+<!-- examenes/templates/examenes/reporte_instructores.html -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <title>Reporte de Instructores</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 60%;
+            margin: 20px auto;
+        }
+        th, td {
+            border: 1px solid #999;
+            padding: 8px 12px;
+            text-align: center;
+        }
+        th {
+            background-color: #444;
+            color: #fff;
+        }
+        tbody tr:nth-child(odd) {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h2 style="text-align:center;">Reporte de Instructores</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Instructor</th>
+                <th>Cantidad de Exámenes</th>
+                <th>% Aprobación</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for inst in instructores %}
+            <tr>
+                <td>{{ inst.nombres }}</td>
+                <td>{{ inst.cantidad_examenes }}</td>
+                <td>{{ inst.porcentaje_aprobacion|floatformat:2 }}%</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="3">No hay datos disponibles</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
