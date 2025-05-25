@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Sistema de Gestión de Dojo de Karate{% endblock %}</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #8b0000; /* Rojo oscuro - tradición */
+            --secondary-color: #222222; /* Negro profundo para el sidebar */
+            --accent-color: #e0a800; /* Dorado - prestigio */
+            --light-bg: #f5f5f5;
+            --white-color: #ffffff;
+            --text-color: #333333;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            display: flex;
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--light-bg);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            background-color: var(--secondary-color);
+            color: var(--white-color);
+            min-height: 100vh;
+            padding: 20px;
+            overflow-y: auto;
+            transition: all 0.3s ease;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .sidebar h2 {
+            color: var(--white-color);
+            font-size: 1.5rem;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .sidebar h2 i {
+            color: var(--accent-color);
+        }
+        
+        .sidebar a {
+            display: flex;
+            align-items: center;
+            color: var(--white-color);
+            text-decoration: none;
+            padding: 12px 15px;
+            margin: 8px 0;
+            border-radius: 6px;
+            transition: all 0.3s;
+            font-size: 0.95rem;
+        }
+        
+        .sidebar a i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+        
+        .sidebar a:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            transform: translateX(5px);
+        }
+        
+        .sidebar a.active, .sidebar a.new-student {
+            background-color: var(--primary-color);
+        }
+        
+        .sidebar a.new-student {
+            margin-top: 20px;
+            background-color: var(--accent-color);
+            color: var(--secondary-color);
+            font-weight: 600;
+        }
+        
+        .sidebar a.new-student:hover {
+            background-color: #c09100;
+        }
+        
+        .sidebar a.logout {
+            margin-top: 40px;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .sidebar a.logout:hover {
+            background-color: rgba(220, 53, 69, 0.8);
+        }
+        
+        /* Content Area */
+        .main-content {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            width: calc(100% - 250px);
+        }
+        
+        .content {
+            flex-grow: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background-color: var(--light-bg);
+        }
+        
+        .content-header {
+            background-color: var(--primary-color);
+            color: var(--white-color);
+            padding: 15px 20px;
+            margin-bottom: 20px;
+            position: relative;
+        }
+        
+        .content-header h1 {
+            margin: 0;
+            font-size: 1.5rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .dark-mode-toggle {
+            background: none;
+            border: none;
+            color: var(--white-color);
+            cursor: pointer;
+            font-size: 1.2rem;
+            position: absolute;
+            top: 50%;
+            right: 20px;
+            transform: translateY(-50%);
+        }
+        
+        .content h1 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+            border-bottom: 2px solid var(--accent-color);
+            padding-bottom: 10px;
+            display: inline-block;
+        }
+        
+        .content h2 {
+            color: var(--secondary-color);
+            margin: 10px 0;
+            font-size: 1.5rem;
+        }
+        
+        .content p {
+            color: var(--text-color);
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+        
+        .info-card {
+            background-color: var(--white-color);
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        /* Empty state style */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #999;
+        }
+        
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            color: #ddd;
+        }
+        
+        .empty-state img {
+            width: 80px;
+            height: 80px;
+            opacity: 0.3;
+            margin-bottom: 20px;
+        }
+        
+        /* Form styles */
+        .form-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+        
+        .form-group input, 
+        .form-group select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+        
+        .button-group {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 25px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .cancel-btn, .submit-btn {
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            font-weight: 500;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .cancel-btn {
+            background-color: #f8f9fa;
+            color: #212529;
+            border: 1px solid #ddd;
+        }
+        
+        .cancel-btn:hover {
+            background-color: #e2e6ea;
+        }
+        
+        .submit-btn {
+            background-color: var(--accent-color);
+            color: var(--secondary-color);
+            border: none;
+        }
+        
+        .submit-btn:hover {
+            background-color: #c09100;
+        }
+        
+        .cancel-btn i, .submit-btn i {
+            margin-right: 5px;
+        }
+        
+        /* Mobile menu toggle */
+        .mobile-menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--white-color);
+            font-size: 1.5rem;
+            cursor: pointer;
+            margin-right: 15px;
+            position: absolute;
+            top: 50%;
+            left: 15px;
+            transform: translateY(-50%);
+            z-index: 101;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 992px) {
+            .sidebar {
+                width: 220px;
+            }
+            
+            .main-content {
+                width: calc(100% - 220px);
+            }
+            
+            .content {
+                padding: 15px;
+            }
+            
+            .form-group input, 
+            .form-group select {
+                padding: 8px 10px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .mobile-menu-toggle {
+                display: block;
+            }
+            
+            .sidebar {
+                position: fixed;
+                left: -280px;
+                width: 280px;
+                box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
+                transition: left 0.3s ease;
+            }
+            
+            .sidebar.active {
+                left: 0;
+            }
+            
+            .main-content {
+                width: 100%;
+                margin-left: 0;
+            }
+            
+            .content-header h1 {
+                text-align: center;
+                padding: 0 50px;
+            }
+            
+            .content h1 {
+                font-size: 1.5rem;
+            }
+            
+            .button-group {
+                flex-direction: column;
+            }
+            
+            .cancel-btn, .submit-btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .content {
+                padding: 10px;
+            }
+            
+            .content-header {
+                padding: 12px 15px;
+            }
+            
+            .content h1 {
+                font-size: 1.3rem;
+            }
+            
+            .form-group label {
+                font-size: 0.95rem;
+            }
+            
+            .form-group input, 
+            .form-group select {
+                font-size: 0.95rem;
+            }
+        }
+        
+        /* Dark mode styles */
+        body.dark-mode {
+            background-color: #1a1a1a;
+        }
+        
+        body.dark-mode .content {
+            background-color: #1a1a1a;
+        }
+        
+        body.dark-mode .info-card,
+        body.dark-mode .form-container {
+            background-color: #2d2d2d;
+            color: var(--white-color);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        body.dark-mode .content h1, 
+        body.dark-mode .content h2 {
+            color: var(--accent-color);
+        }
+        
+        body.dark-mode .content p {
+            color: #e1e1e1;
+        }
+        
+        body.dark-mode .form-group label {
+            color: #e1e1e1;
+        }
+        
+        body.dark-mode .form-group input,
+        body.dark-mode .form-group select {
+            background-color: #3d3d3d;
+            border-color: #444;
+            color: #e1e1e1;
+        }
+        /*Modal styles*/
+
+        .modal {
+            position: fixed !important;
+            z-index: 9999 !important;
+            left: 0 !important; top: 0 !important;
+            width: 100% !important; height: 100% !important;
+            background: rgba(0,0,0,0.5) !important;
+            display: none !important;
+        }
+
+        .modal-content {
+            background: white;
+            max-width: 480px;
+            margin: 60px auto;
+            padding: 20px 30px;
+            border-radius: 8px;
+            position: relative;
+        }
+
+
+        /* Additional styles for specific components */
+        {% block additional_styles %}{% endblock %}
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <div class="sidebar" id="sidebar">
+        <h2>Menú</h2>
+        
+        <a href="{% url 'crear_alumno' %}" class="new-student">
+            <i class="fas fa-user-plus"></i>
+            <span>+ Nuevo Alumno</span>
+        </a>
+        <a href="{% url 'listar_alumnos' %}">
+            <i class="fas fa-users"></i>
+            <span>Ver Alumnos</span>
+        </a>
+        <a href="{% url 'listar_examenes' %}">
+            <i class="fas fa-award"></i>
+            <span>Exámenes</span>
+        </a>
+        <a href="{% url 'listar_pagos' %}">
+            <i class="fas fa-money-bill-wave"></i>
+            <span>Pagos</span>
+        </a>
+        <a href="{% url 'logout' %}" class="logout">
+            <i class="fas fa-sign-out-alt"></i>
+            <span>Cerrar sesión</span>
+        </a>
+    </div>
+    
+    <div class="main-content">
+        <div class="content-header">
+            <button class="mobile-menu-toggle" id="mobileMenuToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            <h1>Sistema de Gestión de Dojo de Karate</h1>
+            <button class="dark-mode-toggle" id="darkModeToggle">
+                <i class="fas fa-moon"></i>
+            </button>
+        </div>
+        
+        <div class="content">
+            <h1>{% block page_title %}{% endblock %}</h1>
+            
+            {% block content %}
+            <!-- El contenido específico de cada página irá aquí -->
+            {% endblock %}
+        </div>
+    </div>
+
+    <!-- Modal Confirmación Eliminar -->
+    <div id="customModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle" style="display:none;">
+        <div class="modal-content">
+        <h3 id="modalTitle">¿Estás seguro de que deseas eliminar este alumno?</h3>
+        <div class="modal-buttons">
+            <button id="confirmYes" class="btn-yes" aria-label="Confirmar eliminación">Aceptar</button>
+            <button id="confirmNo" class="btn-no" aria-label="Cancelar eliminación">Cancelar</button>
+        </div>
+        </div>
+    </div>
+
+
+    <script>
+        // Script para marcar el menú activo basado en la URL actual
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentPath = window.location.pathname;
+            const menuLinks = document.querySelectorAll('.sidebar a');
+            
+            menuLinks.forEach(link => {
+                if (link.getAttribute('href') === currentPath) {
+                    link.classList.add('active');
+                }
+            });
+            
+            // Funcionalidad para cambiar entre modo claro y oscuro
+            const darkModeToggle = document.getElementById('darkModeToggle');
+            const moonIcon = '<i class="fas fa-moon"></i>';
+            const sunIcon = '<i class="fas fa-sun"></i>';
+            
+            // Comprueba si hay una preferencia guardada
+            const isDarkMode = localStorage.getItem('darkMode') === 'true';
+            
+            // Aplica el modo oscuro si estaba activado
+            if (isDarkMode) {
+                document.body.classList.add('dark-mode');
+                darkModeToggle.innerHTML = sunIcon;
+            }
+            
+            darkModeToggle.addEventListener('click', function() {
+                document.body.classList.toggle('dark-mode');
+                const isDark = document.body.classList.contains('dark-mode');
+                darkModeToggle.innerHTML = isDark ? sunIcon : moonIcon;
+                localStorage.setItem('darkMode', isDark);
+            });
+            
+            // Funcionalidad para el menú móvil
+            const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+            const sidebar = document.getElementById('sidebar');
+            
+            mobileMenuToggle.addEventListener('click', function() {
+                sidebar.classList.toggle('active');
+            });
+            
+            // Cerrar el menú móvil al hacer clic en cualquier enlace
+            const sidebarLinks = document.querySelectorAll('.sidebar a');
+            sidebarLinks.forEach(link => {
+                link.addEventListener('click', function() {
+                    if (window.innerWidth <= 768) {
+                        sidebar.classList.remove('active');
+                    }
+                });
+            });
+            
+            // Cerrar el menú móvil al hacer clic fuera del menú
+            document.addEventListener('click', function(event) {
+                if (window.innerWidth <= 768 && 
+                    !sidebar.contains(event.target) && 
+                    !mobileMenuToggle.contains(event.target) && 
+                    sidebar.classList.contains('active')) {
+                    sidebar.classList.remove('active');
+                }
+            });
+            
+            // Ajustar el menú al cambiar el tamaño de la ventana
+            window.addEventListener('resize', function() {
+                if (window.innerWidth > 768) {
+                    sidebar.classList.remove('active');
+                }
+            });
+        });
+    </script>
+    
+    {% block extra_js %}{% endblock %}
+</body>
+</html>
