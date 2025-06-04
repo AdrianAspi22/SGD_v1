@@ -205,6 +205,8 @@
             }
         }
     </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 </head>
 <body>
     <div class="sidebar">
@@ -249,6 +251,25 @@
             <p><i class="fas fa-map-marker-alt"></i> Ubicación: {{ dojo.ubicacion }}</p>
         </div>
         {% endif %}
+        <div style="width: 100%; max-width: 700px; margin: 30px auto;">
+            <canvas id="graficoGrados"></canvas>
+        </div>
+        <div style="width: 100%; max-width: 700px; margin: 30px auto;">
+            <canvas id="graficoPromedios"></canvas>
+        </div>
+        <div style="width: 400px; margin: 20px auto;">
+            <canvas id="graficoAprobacion"></canvas>
+        </div>
+        <div>
+            <label for="filtroAlumnos">Mostrar:</label>
+            <select id="filtroAlumnos">
+                <option value="todos">Todos</option>
+                <option value="mejores">Promedio ≥ 6</option>
+                <option value="peores">Promedio < 6</option>
+            </select>
+
+            <canvas id="chartPromediosAlumnos"></canvas>
+        </div>
     </div>
 
     <script>
@@ -263,6 +284,144 @@
                 }
             });
         });
+
+        const ctx = document.getElementById('graficoAprobacion').getContext('2d');
+        const graficoAprobacion = new Chart(ctx, {
+            type: 'pie',
+            data: {
+            labels: ['Aprobados', 'No Aprobados'],
+            datasets: [{
+                label: 'Tasa de Aprobación',
+                data: [{{ aprobados }}, {{ no_aprobados }}],
+                backgroundColor: [
+                'rgba(75, 192, 192, 0.7)',   // verde
+                'rgba(255, 99, 132, 0.7)'    // rojo
+                ],
+                borderColor: [
+                'rgba(75, 192, 192, 1)',
+                'rgba(255, 99, 132, 1)'
+                ],
+                borderWidth: 1
+            }]
+            },
+            options: {
+            responsive: true,
+            plugins: {
+                title: {
+                display: true,
+                text: 'Tasa de Aprobación General'
+                }
+            }
+            }
+        });
+
     </script>
+    <script>
+  const ctx2 = document.getElementById('graficoPromedios').getContext('2d');
+  const graficoPromedios = new Chart(ctx2, {
+    type: 'bar',
+    data: {
+      labels: {{ labels_instructores|safe }},
+      datasets: [{
+        label: 'Promedio de Notas por Instructor',
+        data: {{ data_promedios|safe }},
+        backgroundColor: 'rgba(54, 162, 235, 0.6)',
+        borderColor: 'rgba(54, 162, 235, 1)',
+        borderWidth: 1
+      }]
+    },
+    options: {
+      responsive: true,
+      scales: {
+        y: {
+          beginAtZero: true,
+          max: 10  // ajusta según tu escala de notas
+        }
+      },
+      plugins: {
+        title: {
+          display: true,
+          text: 'Rendimiento Promedio por Instructor'
+        }
+      }
+    }
+  });
+    </script>
+<script>
+  const ctx3 = document.getElementById('graficoGrados').getContext('2d');
+  const graficoGrados = new Chart(ctx3, {
+    type: 'pie',
+    data: {
+      labels: {{ labels_grados|safe }},
+      datasets: [{
+        label: 'Alumnos por Grado Actual',
+        data: {{ data_grados|safe }},
+        backgroundColor: [
+          '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40'
+        ],
+        borderWidth: 1
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        title: {
+          display: true,
+          text: 'Distribución de Alumnos por Grado Actual'
+        }
+      }
+    }
+  });
+</script>
+
+
+<script>
+const labelsOriginal = {{ labels_alumnos|safe }};
+const dataOriginal = {{ data_promedios_alumnos|safe }};
+
+const ctxAlumnos = document.getElementById('chartPromediosAlumnos').getContext('2d');
+const chartAlumnos = new Chart(ctxAlumnos, {
+    type: 'bar',
+    data: {
+        labels: labelsOriginal,
+        datasets: [{
+            label: 'Promedio de nota',
+            data: dataOriginal,
+            backgroundColor: 'rgba(75, 192, 192, 0.6)'
+        }]
+    },
+    options: {
+        responsive: true,
+        scales: {
+            y: {
+                beginAtZero: true,
+                max: 20
+            }
+        }
+    }
+});
+
+document.getElementById('filtroAlumnos').addEventListener('change', function () {
+    const filtro = this.value;
+    let nuevasLabels = [];
+    let nuevosDatos = [];
+
+    for (let i = 0; i < dataOriginal.length; i++) {
+        if (
+            filtro === 'todos' ||
+            (filtro === 'mejores' && dataOriginal[i] >= 6) ||
+            (filtro === 'peores' && dataOriginal[i] < 6)
+        ) {
+            nuevasLabels.push(labelsOriginal[i]);
+            nuevosDatos.push(dataOriginal[i]);
+        }
+    }
+
+    chartAlumnos.data.labels = nuevasLabels;
+    chartAlumnos.data.datasets[0].data = nuevosDatos;
+    chartAlumnos.update();
+});
+</script>
+
 </body>
 </html>
