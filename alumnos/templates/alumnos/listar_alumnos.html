@@ -1,545 +1,135 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Control de Alumnos - Dojo de Karate</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        
-        body {
-            background: #f5f5f5;
-            color: #333;
-            padding: 0;
-            margin: 0;
-        }
-        
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        
-        .header {
-            background: #009688;
-            color: white;
-            padding: 15px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-        
-        .header-left {
-            display: flex;
-            align-items: center;
-        }
-        
-        .logo {
-            margin-right: 15px;
-        }
-        
-        .title {
-            font-size: 20px;
-            font-weight: 600;
-        }
-        
-        .search-box {
-            display: flex;
-            padding: 20px;
-            background: #fff;
-            border-radius: 0;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-            margin-bottom: 0;
-        }
-        
-        .search-input {
-            flex-grow: 1;
-            padding: 8px 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 14px;
-            margin-right: 10px;
-        }
-        
-        .search-button {
-            padding: 8px 15px;
-            background: #4285f4;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        
-        .register-button {
-            display: block;
-            padding: 8px 15px;
-            background: #4285f4;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            text-decoration: none;
-            font-size: 14px;
-            cursor: pointer;
-        }
-        
-        .search-result {
-            background: #e0f7e0;
-            padding: 10px;
-            border-radius: 0;
-            margin-top: 0;
-            font-size: 14px;
-            color: #2e7d32;
-        }
-        
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 0;
-            background: white;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        }
-        
-        th {
-            background: #f5f5f5;
-            color: #666;
-            text-align: left;
-            padding: 12px 15px;
-            font-weight: 600;
-            border-bottom: 1px solid #ddd;
-        }
-        
-        td {
-            padding: 10px 15px;
-            border-bottom: 1px solid #eee;
-            font-size: 14px;
-        }
-        
-        tr:nth-child(even) {
-            background: #f9f9f9;
-        }
-        
-        .icon-btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 30px;
-            height: 30px;
-            border-radius: 4px;
-            margin: 0 2px;
-            cursor: pointer;
-        }
-        
-        .edit-btn {
-            background: #4285f4;
-            color: white;
-        }
-        
-        .delete-btn {
-            background: #ea4335;
-            color: white;
-        }
-        
-        .subject-icon, .status-icon {
-            padding: 4px 8px;
-            border-radius: 4px;
-            display: inline-block;
-            color: white;
-            font-size: 12px;
-            text-align: center;
-        }
-        
-        .status-icon.finalizado {
-            background: #34a853;
-        }
-        
-        .status-icon.progreso {
-            background: #fbbc05;
-        }
-        
-        .status-icon.pendiente {
-            background: #4285f4;
-        }
-        
-        .back-link {
-            display: inline-block;
-            margin-bottom: 15px;
-            color: #4285f4;
-            text-decoration: none;
-            font-weight: 500;
-        }
-        
-        .back-link:hover {
-            text-decoration: underline;
-        }
+{% extends "base.html" %}
 
-        .filters {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-        
-        .filter-select {
-            padding: 8px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-        
-        .apply-filter {
-            padding: 8px 15px;
-            background: #4285f4;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        
-        .export-buttons {
-            display: flex;
-            justify-content: flex-end;
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-        
-        .export-button {
-            padding: 8px 15px;
-            background: white;
-            color: #666;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            cursor: pointer;
-            text-decoration: none;
-        }
-        
-        .page-title {
-            font-size: 24px;
-            font-weight: 500;
-            margin: 20px 0;
-            color: #333;
-        }
-        
-        .pagination {
-            display: flex;
-            align-items: center;
-            margin-top: 20px;
-        }
-        
-        .pagination select {
-            margin: 0 10px;
-            padding: 5px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-        
-        .pagination-text {
-            margin-right: auto;
-        }
-        
-        .pagination-buttons {
-            display: flex;
-            gap: 10px;
-        }
-        
-        .pagination-button {
-            padding: 8px 15px;
-            background: #f5f5f5;
-            color: #333;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            cursor: pointer;
-            text-decoration: none;
-        }
-        
-        .pagination-button.active {
-            background: #4285f4;
-            color: white;
-            border-color: #4285f4;
-        }
+{% block title %}Listado de Alumnos{% endblock %}
+{% block page_title %}Listado de Alumnos{% endblock %}
 
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 999;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0, 0, 0, 0.6);
-        }
-          
-        .modal-content {
-            background-color: #fff;
-            margin: 15% auto;
-            padding: 20px;
-            border-radius: 8px;
-            width: 90%;
-            max-width: 400px;
-            text-align: center;
-            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.3);
-        }
-          
-        .modal-content h3 {
-            margin-bottom: 20px;
-            color: #333;
-        }
-          
-        .modal-buttons {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-        }
-          
-        .btn-yes {
-            background-color: #ea4335;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-          
-        .btn-no {
-            background-color: #757575;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-          
-        .btn-yes:hover {
-            background-color: #d32f2f;
-        }
-          
-        .btn-no:hover {
-            background-color: #616161;
-        }
+{% block content %}
+<div class="form-container" style="max-width: none;">
+    <form method="get" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px;">
+        <input type="text" name="q" class="form-control" placeholder="Buscar por código o nombre..." value="{{ query }}" style="flex: 1;">
+        <button type="submit" class="submit-btn"><i class="fas fa-search"></i> Buscar</button>
 
-        .badge {
-            display: inline-block;
-            padding: 4px 8px;
-            border-radius: 12px;
-            font-size: 12px;
-            font-weight: 500;
-        }
-        
-        .badge-finalizado {
-            background-color: #e6f4ea;
-            color: #34a853;
-        }
-        
-        .badge-progreso {
-            background-color: #fef7e0;
-            color: #f9ab00;
-        }
-        
-        .badge-pendiente {
-            background-color: #e8f0fe;
-            color: #4285f4;
-        }
-        
-        .ver-btn {
-            background: #f1f1f1;
-            color: #333;
-            padding: 4px 8px;
-            border-radius: 4px;
-            text-decoration: none;
-            font-size: 12px;
-        }
-    </style>
-</head>
-<body>
-    <div class="header">
-        <div class="header-left">
-            <div class="logo">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="white">
-                    <path d="M12 2L9 9H3l5 4-2 7 6-3 6 3-2-7 5-4h-6z"/>
-                </svg>
-            </div>
-            <div class="title">Sistema de Gestión de Dojo de Karate</div>
-        </div>
-        <div class="user-info">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="white">
-                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/>
-            </svg>
-        </div>
-    </div>
+        <select name="matricula" class="form-control">
+            <option value="">Todas las matrículas</option>
+            <option value="Matricula regular" {% if filtro_matricula == "Matricula regular" %}selected{% endif %}>Matrícula regular</option>
+            <option value="Matricula excepcional" {% if filtro_matricula == "Matricula excepcional" %}selected{% endif %}>Matrícula excepcional</option>
+        </select>
 
-    <div class="container">
-        <h2 class="page-title">Listado de Alumnos</h2>
-        
-        <div class="search-box">
-            <form method="get" style="display: flex; width: 100%;">
-                <input type="text" name="q" class="search-input" placeholder="Buscar por código o nombre..." value="{{ query }}">
-                <button type="submit" class="search-button">Buscar</button>
-            </form>
+        <select name="grupo" class="form-control">
+            <option value="">Todos los grupos</option>
+            <option value="Mañana" {% if filtro_grupo == "Mañana" %}selected{% endif %}>Mañana</option>
+            <option value="Tarde" {% if filtro_grupo == "Tarde" %}selected{% endif %}>Tarde</option>
+            <option value="Noche" {% if filtro_grupo == "Noche" %}selected{% endif %}>Noche</option>
+        </select>
+
+        <select name="cinturon" class="form-control">
+            <option value="">-- Cinturón --</option>
+            {% for opcion in colores_grado %}
+                <option value="{{ opcion }}" {% if filtro_cinturon == opcion %}selected{% endif %}>{{ opcion }}</option>
+            {% endfor %}
+        </select>
+
+        <select name="estado" class="form-control">
+            <option value="">Todos los estados</option>
+            <option value="Activo" {% if filtro_estado == "Activo" %}selected{% endif %}>Activo</option>
+            <option value="Inactivo" {% if filtro_estado == "Inactivo" %}selected{% endif %}>Inactivo</option>
+        </select>
+
+        <button type="submit" class="submit-btn"><i class="fas fa-filter"></i> Filtrar</button>
+        <a href="{% url 'crear_alumno' %}" class="submit-btn" style="background-color: var(--accent-color); color: var(--secondary-color);">
+            <i class="fas fa-user-plus"></i> Registrar Alumno
+        </a>
+    </form>
+
+    {% if result_count is not None %}
+        <div class="info-card" style="background-color: #d4edda; color: #155724;">
+            Búsqueda exitosa. Se {{ result_count|pluralize:"encontró,encontraron" }} {{ result_count }} coincidencia{{ result_count|pluralize }} con su búsqueda
         </div>
-        
-        <div style="display: flex; justify-content: space-between; margin: 20px 0;">
-            <div class="filters">
-                <form method="get" style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin: 20px 0;">
-                    <!-- Filtro: Matrícula -->
-                    <select name="matricula" class="filter-select">
-                        <option value="">Todas las matrículas</option>
-                        <option value="Matricula regular" {% if filtro_matricula == "Matricula regular" %}selected{% endif %}>Matrícula regular</option>
-                        <option value="Matricula excepcional" {% if filtro_matricula == "Matricula excepcional" %}selected{% endif %}>Matrícula excepcional</option>
-                    </select>
-                
-                    <!-- Filtro: Grupo -->
-                    <select name="grupo" class="filter-select">
-                        <option value="">Todos los grupos</option>
-                        <option value="Mañana" {% if filtro_grupo == "Mañana" %}selected{% endif %}>Mañana</option>
-                        <option value="Tarde" {% if filtro_grupo == "Tarde" %}selected{% endif %}>Tarde</option>
-                        <option value="Noche" {% if filtro_grupo == "Noche" %}selected{% endif %}>Noche</option>
-                    </select>
-                
-                    <!-- Filtro: Cinturón -->
-                    <select name="cinturon" class="form-control mr-2">
-                        <option value="">-- Cinturón --</option>
-                        {% for opcion in colores_grado %}
-                            <option value="{{ opcion }}" {% if filtro_cinturon == opcion %}selected{% endif %}>{{ opcion }}</option>
-                        {% endfor %}
-                    </select>
-                
-                    <!-- Filtro: Estado -->
-                    <select name="estado" class="filter-select">
-                        <option value="">Todos los estados</option>
-                        <option value="Activo" {% if filtro_estado == "Activo" %}selected{% endif %}>Activo</option>
-                        <option value="Inactivo" {% if filtro_estado == "Inactivo" %}selected{% endif %}>Inactivo</option>
-                    </select>
-                
-                    <!-- Botón Buscar (reciclado para filtros) -->
-                    <button type="submit" class="search-button">Filtrar</button>
-                </form>                
-                <button class="register-button" onclick="location.href='{% url "crear_alumno" %}'">Registrar Alumno</button>
-            </div>
-            
-            <div class="export-buttons">
-                <a href="#" class="export-button">Exportar a Excel</a>
-                <a href="#" class="export-button">Exportar a PDF</a>
-            </div>
-        </div>
-        
-        {% if result_count is not None %}
-            <div class="search-result">
-                Búsqueda exitosa. Se {{ result_count|pluralize:"encontró,encontraron" }} {{ result_count }} coincidencia{{ result_count|pluralize }} con su búsqueda
-            </div>
-        {% endif %}
-        
-        <table>
+    {% endif %}
+
+    <div style="overflow-x: auto;">
+        <table style="width: 100%; background-color: white; border-collapse: collapse; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 6px rgba(0,0,0,0.08);">
             <thead>
-                <tr>
-                    <th>Código</th>
-                    <th>Nombre</th>
-                    <th>Matrícula</th>
-                    <th>Grupo</th>
-                    <th>Cinturón</th>
-                    <th>Estado</th>
-                    <th>Acciones</th>
+                <tr style="background-color: #f5f5f5; color: #333;">
+                    <th style="padding: 12px;">Código</th>
+                    <th style="padding: 12px;">Nombre</th>
+                    <th style="padding: 12px;">Matrícula</th>
+                    <th style="padding: 12px;">Grupo</th>
+                    <th style="padding: 12px;">Cinturón</th>
+                    <th style="padding: 12px;">Estado</th>
+                    <th style="padding: 12px;">Acciones</th>
                 </tr>
             </thead>
             <tbody>
                 {% for alumno in alumnos %}
-                <tr>
-                    <td>{{ alumno.pk }}</td>
-                    <td>{{ alumno.nombre }} {{ alumno.apellido }}</td>
-                    <td>{{ alumno.matricula }}</td>
-                    <td>{{ alumno.grupo }}</td>
-                    <td>{{ alumno.grado_actual|default:"-" }}</td>
-                    <td>
-                        <span class="badge badge-finalizado">Activo</span>
+                <tr style="border-bottom: 1px solid #eee;">
+                    <td style="padding: 12px;">{{ alumno.pk }}</td>
+                    <td style="padding: 12px;">{{ alumno.nombre }} {{ alumno.apellido }}</td>
+                    <td style="padding: 12px;">{{ alumno.matricula }}</td>
+                    <td style="padding: 12px;">{{ alumno.grupo }}</td>
+                    <td style="padding: 12px; text-align: center;">
+                        {% if alumno.grado_actual %}
+                            <span class="badge badge-grado">{{ alumno.grado_actual }}</span>
+                        {% else %}
+                            <span class="badge badge-sin-grado">Sin grado</span>
+                        {% endif %}
                     </td>
-                    <td>
-                        <a href="{% url 'editar_alumno' alumno.pk %}" class="icon-btn edit-btn">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="white">
-                                <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
-                            </svg>
+                    <td style="padding: 12px; text-align: center;">
+                        {% if alumno.estado == "Activo" %}
+                            <span class="badge badge-activo">Activo</span>
+                        {% else %}
+                            <span class="badge badge-inactivo">Inactivo</span>
+                        {% endif %}
+                    </td>
+                    <td style="padding: 8px; text-align: center; display: flex; justify-content: center; gap: 10px;">
+                        <a href="#" onclick="abrirModal({{ alumno.pk }})" class="icon-btn edit-btn" title="Editar">
+                            <i class="fas fa-pen"></i>
                         </a>
-                        <a href="{% url 'eliminar_alumno' alumno.pk %}" class="icon-btn delete-btn" onclick="confirmDeletion(event, this.href)">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="white">
-                                <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
-                            </svg>
+                        <a href="{% url 'eliminar_alumno' alumno.pk %}" class="icon-btn delete-btn" onclick="confirmDeletion(event, this.href)" title="Eliminar">
+                            <i class="fas fa-trash"></i>
                         </a>
                     </td>
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="7" style="text-align: center; padding: 20px;">No hay alumnos registrados, registra porfavorcito.</td>
+                    <td colspan="7" style="text-align: center; padding: 20px;">No hay alumnos registrados.</td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
-        
-        <div class="pagination">
-            <form method="get" style="display: flex; align-items: center; gap: 10px;">
-                <label>Mostrar</label>
-                <select name="per_page" onchange="this.form.submit()">
-                    <option value="5" {% if per_page == 5 %}selected{% endif %}>5</option>
-                    <option value="10" {% if per_page == 10 %}selected{% endif %}>10</option>
-                    <option value="15" {% if per_page == 15 %}selected{% endif %}>15</option>
-                    <option value="20" {% if per_page == 20 %}selected{% endif %}>20</option>
-                </select>
-                <label>por página</label>
-                {% if query %}
-                    <input type="hidden" name="q" value="{{ query }}">
-                {% endif %}
-                <input type="hidden" name="page" value="1">
-            </form>
-        
-            <div class="pagination-buttons">
-                {% if alumnos.has_previous %}
-                    <a class="pagination-button" href="?page={{ alumnos.previous_page_number }}&per_page={{ per_page }}{% if query %}&q={{ query }}{% endif %}">Anterior</a>
-                {% endif %}
-        
-                {% for num in alumnos.paginator.page_range %}
-                    {% if num == alumnos.number %}
-                        <span class="pagination-button active">{{ num }}</span>
-                    {% elif num >= alumnos.number|add:'-2' and num <= alumnos.number|add:'2' %}
-                        <a class="pagination-button" href="?page={{ num }}&per_page={{ per_page }}{% if query %}&q={{ query }}{% endif %}">{{ num }}</a>
-                    {% endif %}
-                {% endfor %}
-        
-                {% if alumnos.has_next %}
-                    <a class="pagination-button" href="?page={{ alumnos.next_page_number }}&per_page={{ per_page }}{% if query %}&q={{ query }}{% endif %}">Siguiente</a>
-                {% endif %}
-            </div>
-        </div>
     </div>
-    
-    <div id="customModal" class="modal">
-        <div class="modal-content">
-          <h3>¿Estás seguro de que deseas eliminar este alumno?</h3>
-          <div class="modal-buttons">
-            <button id="confirmYes" class="btn-yes">Aceptar</button>
-            <button id="confirmNo" class="btn-no">Cancelar</button>
-          </div>
-        </div>
-    </div>
-    
-    <script>
-        let deleteUrl = null;
 
-        function confirmDeletion(event, url) {
-          event.preventDefault();
-          deleteUrl = url;
-          document.getElementById("customModal").style.display = "block";
-        }
-        
-        document.getElementById("confirmYes").addEventListener("click", function () {
-          if (deleteUrl) {
-            window.location.href = deleteUrl;
-          }
-        });
-        
-        document.getElementById("confirmNo").addEventListener("click", function () {
-          document.getElementById("customModal").style.display = "none";
-          deleteUrl = null;
-        });
-    </script>
-</body>
-</html>
+    <div class="pagination" style="margin-top: 20px;">
+        <form method="get" style="display: flex; align-items: center; gap: 10px;">
+            <label>Mostrar</label>
+            <select name="per_page" onchange="this.form.submit()">
+                <option value="5" {% if per_page == 5 %}selected{% endif %}>5</option>
+                <option value="10" {% if per_page == 10 %}selected{% endif %}>10</option>
+                <option value="15" {% if per_page == 15 %}selected{% endif %}>15</option>
+                <option value="20" {% if per_page == 20 %}selected{% endif %}>20</option>
+            </select>
+            <label>por página</label>
+            {% if query %}<input type="hidden" name="q" value="{{ query }}">{% endif %}
+            <input type="hidden" name="page" value="1">
+        </form>
+
+        <div style="margin-left: auto; display: flex; gap: 10px;">
+            {% if alumnos.has_previous %}
+                <a class="pagination-button" href="?page={{ alumnos.previous_page_number }}&per_page={{ per_page }}{% if query %}&q={{ query }}{% endif %}">Anterior</a>
+            {% endif %}
+
+            {% for num in alumnos.paginator.page_range %}
+                {% if num == alumnos.number %}
+                    <span class="pagination-button active">{{ num }}</span>
+                {% elif num >= alumnos.number|add:'-2' and num <= alumnos.number|add:'2' %}
+                    <a class="pagination-button" href="?page={{ num }}&per_page={{ per_page }}{% if query %}&q={{ query }}{% endif %}">{{ num }}</a>
+                {% endif %}
+            {% endfor %}
+
+            {% if alumnos.has_next %}
+                <a class="pagination-button" href="?page={{ alumnos.next_page_number }}&per_page={{ per_page }}{% if query %}&q={{ query }}{% endif %}">Siguiente</a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

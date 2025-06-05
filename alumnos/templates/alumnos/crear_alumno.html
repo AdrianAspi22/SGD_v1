@@ -1,139 +1,32 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registrar Alumno</title>
-    <style>
-        :root {
-            --primary-color: #990000;
-            --accent-color: #e6b800;
-            --light-bg: #f5f5f5;
-            --border-color: #ddd;
-            --text-color: #333;
-        }
+{% extends 'base.html' %}
+
+{% block title %}Registrar Alumno{% endblock %}
+
+{% block page_title %}Registrar Alumno{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <form method="POST">
+        {% csrf_token %}
         
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #fff;
-            color: var(--text-color);
-        }
-        
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        
-        h2 {
-            color: var(--primary-color);
-            font-size: 28px;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid var(--accent-color);
-        }
-        
-        form {
-            background-color: var(--light-bg);
-            padding: 25px;
-            border-radius: 5px;
-            border-left: 4px solid var(--primary-color);
-        }
-        
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: bold;
-        }
-        
-        input, select, textarea {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 20px;
-            border: 1px solid var(--border-color);
-            border-radius: 4px;
-            font-size: 16px;
-        }
-        
-        button {
-            background-color: var(--accent-color);
-            color: #000;
-            border: none;
-            padding: 12px 20px;
-            font-size: 16px;
-            font-weight: bold;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-        
-        button:hover {
-            background-color: #d4a900;
-        }
-        
-        .button-group {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 20px;
-        }
-        
-        .cancel-button {
-            background-color: #f5f5f5;
-            color: #333;
-            border: 1px solid #ddd;
-        }
-        
-        .cancel-button:hover {
-            background-color: #e5e5e5;
-        }
-        
-        .error {
-            color: var(--primary-color);
-            font-size: 14px;
-            margin-top: -15px;
-            margin-bottom: 15px;
-        }
-        
-        .header {
-            background-color: var(--primary-color);
-            color: white;
-            padding: 15px 20px;
-            margin-bottom: 20px;
-        }
-        
-        .header h1 {
-            margin: 0;
-            font-size: 24px;
-        }
-    </style>
-</head>
-<body>
-    <div class="header">
-        <h1>Sistema de Gestión de Dojo</h1>
-    </div>
-    
-    <div class="container">
-        <h2>Registrar Alumno</h2>
-        <form method="POST">
-            {% csrf_token %}
-            
-            {% for field in form %}
-                <div class="form-group">
-                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-                    {{ field }}
-                    {% if field.errors %}
-                        <div class="error">{{ field.errors }}</div>
-                    {% endif %}
-                </div>
-            {% endfor %}
-            
-            <div class="button-group">
-                <button type="button" class="cancel-button" onclick="window.location.href='{% url 'listar_alumnos' %}'">Cancelar</button>
-                <button type="submit">Agregar Alumno</button>
+        {% for field in form %}
+            <div class="form-group">
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+                {% if field.errors %}
+                    <div class="error">{{ field.errors }}</div>
+                {% endif %}
             </div>
-        </form>
-    </div>
-</body>
-</html>
+        {% endfor %}
+        
+        <div class="button-group">
+            <a href="{% url 'listar_alumnos' %}" class="cancel-btn">
+                <i class="fas fa-arrow-left"></i> Cancelar
+            </a>
+            <button type="submit" class="submit-btn">
+                <i class="fas fa-check"></i> Agregar Alumno
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}
