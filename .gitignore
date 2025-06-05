@@ -13,7 +13,7 @@ ENV/
 # Archivos de configuración de IDEs
 .vscode/
 .idea/
-
+cifrado_seguridad/
 # Base de datos SQLite (si es usada solo localmente)
 *.sqlite3
 
