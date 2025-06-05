@@ -1,20 +1,42 @@
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <!-- templates/instructores/crear_instructor.html -->
-<h1>Crear Instructor</h1>
+{% extends "base.html" %}
 
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Guardar</button>
-</form>
+{% block title %}Crear Instructor{% endblock %}
+{% block page_title %}Crear Instructor{% endblock %}
 
-<a href="{% url 'listar_instructores' %}">Volver a la lista</a>
+{% block content %}
+    <div class="content">
+        <div class="form-container">
+            <form method="post">
+                {% csrf_token %}
+                
+                {% for field in form %}
+                    <div class="form-group">
+                        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                        {{ field }}
+                        {% if field.help_text %}
+                            <small>{{ field.help_text }}</small>
+                        {% endif %}
+                        {% if field.errors %}
+                            <div class="error">
+                                {{ field.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
 
-</body>
-</html>
+                <div class="button-group">
+                    <div class="button-wrapper">
+                        <a href="{% url 'listar_instructores' %}" class="cancel-btn">
+                            <i class="fas fa-times"></i> Cancelar
+                        </a>
+                    </div>
+                    <div class="button-wrapper">
+                        <button type="submit" class="submit-btn">
+                            <i class="fas fa-check"></i> Crear Instructor
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}

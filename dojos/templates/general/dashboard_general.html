@@ -1,17 +1,23 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard General</title>
-</head>
-<body>
-    <h1>{{ message }}</h1>
-    <p>¡Hola, {{ user.username }}!</p>
-    
-    <!-- Aquí puedes agregar más contenido, como estadísticas, tablas o gráficas -->
-    <p>Aquí puedes gestionar todos los dojos y usuarios.</p>
-    
-    <a href="{% url 'logout' %}">Cerrar sesión</a>
-</body>
-</html>
+{% extends "base.html" %}
+
+{% block title %}Dashboard General{% endblock %}
+{% block page_title %}Dashboard General{% endblock %}
+
+{% block content %}
+    <div class="content">
+        <div class="info-card">
+            <h2>{{ message }}</h2>
+            <p>¡Hola, {{ user.username }}!</p>
+            <p>Aquí puedes gestionar todos los dojos y usuarios.</p>
+        </div>
+        
+        <!-- Aquí puedes agregar más contenido como estadísticas, tablas o gráficas -->
+        <div class="info-card">
+            <p>Pronto podrás ver estadísticas detalladas y gráficas relacionadas con la gestión de dojos.</p>
+        </div>
+        
+        <div class="button-group">
+            <a href="{% url 'logout' %}" class="submit-btn">Cerrar sesión</a>
+        </div>
+    </div>
+{% endblock %}

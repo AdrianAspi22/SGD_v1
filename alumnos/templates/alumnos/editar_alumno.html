@@ -1,139 +1,38 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Editar Alumno</title>
-    <style>
-        :root {
-            --primary-color: #990000;
-            --accent-color: #e6b800;
-            --light-bg: #f5f5f5;
-            --border-color: #ddd;
-            --text-color: #333;
-        }
-        
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #fff;
-            color: var(--text-color);
-        }
-        
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        
-        h2 {
-            color: var(--primary-color);
-            font-size: 28px;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid var(--accent-color);
-        }
-        
-        form {
-            background-color: var(--light-bg);
-            padding: 25px;
-            border-radius: 5px;
-            border-left: 4px solid var(--primary-color);
-        }
-        
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: bold;
-        }
-        
-        input, select, textarea {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 20px;
-            border: 1px solid var(--border-color);
-            border-radius: 4px;
-            font-size: 16px;
-        }
-        
-        button {
-            background-color: var(--accent-color);
-            color: #000;
-            border: none;
-            padding: 12px 20px;
-            font-size: 16px;
-            font-weight: bold;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-        
-        button:hover {
-            background-color: #d4a900;
-        }
-        
-        .button-group {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 20px;
-        }
-        
-        .cancel-button {
+<form id="form-editar-alumno" method="post" action="{% url 'editar_alumno_modal' form.instance.pk %}" style="padding: 20px;">
+    {% csrf_token %}
+
+    {% for field in form %}
+        <div class="form-group" style="margin-bottom: 15px;">
+            <label for="{{ field.id_for_label }}" style="display: block; margin-bottom: 5px; font-weight: bold; color: #990000;">
+                {{ field.label }}
+            </label>
+            {{ field }}
+            {% if field.errors %}
+                <div class="error" style="color: #990000; font-size: 14px; margin-top: 5px;">
+                    {{ field.errors }}
+                </div>
+            {% endif %}
+        </div>
+    {% endfor %}
+
+    <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
+        <button type="button" onclick="cerrarModal()" style="
             background-color: #f5f5f5;
             color: #333;
             border: 1px solid #ddd;
-        }
-        
-        .cancel-button:hover {
-            background-color: #e5e5e5;
-        }
-        
-        .error {
-            color: var(--primary-color);
-            font-size: 14px;
-            margin-top: -15px;
-            margin-bottom: 15px;
-        }
-        
-        .header {
-            background-color: var(--primary-color);
-            color: white;
-            padding: 15px 20px;
-            margin-bottom: 20px;
-        }
-        
-        .header h1 {
-            margin: 0;
-            font-size: 24px;
-        }
-    </style>
-</head>
-<body>
-    <div class="header">
-        <h1>Sistema de Gestión de Dojo</h1>
+            padding: 10px 18px;
+            border-radius: 4px;
+            cursor: pointer;
+        ">Cancelar</button>
+
+        <button type="submit" style="
+            background-color: #e6b800;
+            color: #000;
+            padding: 10px 18px;
+            font-weight: bold;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        ">Guardar</button>
     </div>
-    
-    <div class="container">
-        <h2>Editar Alumno</h2>
-        <form method="POST">
-            {% csrf_token %}
-            
-            {% for field in form %}
-                <div class="form-group">
-                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-                    {{ field }}
-                    {% if field.errors %}
-                        <div class="error">{{ field.errors }}</div>
-                    {% endif %}
-                </div>
-            {% endfor %}
-            
-            <div class="button-group">
-                <button type="button" class="cancel-button" onclick="window.location.href='{% url 'listar_alumnos' %}'">Cancelar</button>
-                <button type="submit">Guardar cambios</button>
-            </div>
-        </form>
-    </div>
-</body>
-</html>
+</form>

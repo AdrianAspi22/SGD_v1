@@ -7,6 +7,7 @@ from .forms import AlumnoForm
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.core.paginator import Paginator
+from django.http import JsonResponse
 
 
 @login_required
@@ -105,10 +106,13 @@ def editar_alumno(request, pk):
         form = AlumnoForm(request.POST, instance=alumno)
         if form.is_valid():
             form.save()
-            return redirect('listar_alumnos')
+            return JsonResponse({'success': True})  # ✅ respuesta esperada
+        else:
+            return JsonResponse({'success': False, 'errors': form.errors})
     else:
         form = AlumnoForm(instance=alumno)
-    return render(request, 'alumnos/editar_alumno.html', {'form': form, 'alumno': alumno})
+        return render(request, 'alumnos/editar_alumno_modal.html', {'form': form})
+
 
 # Vista para eliminar un alumno
 @login_required

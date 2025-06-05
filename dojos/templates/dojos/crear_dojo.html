@@ -1,85 +1,22 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Crear Dojo</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f9;
-            margin: 0;
-            padding: 0;
-        }
-        .container {
-            width: 80%;
-            max-width: 800px;
-            margin: 20px auto;
-            background-color: #fff;
-            border-radius: 8px;
-            padding: 20px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-        header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        h1 {
-            font-size: 24px;
-            color: #2c3e50;
-        }
-        form {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-        form input,
-        form select,
-        form textarea,
-        form button {
-            padding: 10px;
-            font-size: 16px;
-            border-radius: 4px;
-            border: 1px solid #ccc;
-        }
-        form button {
-            background-color: #28a745;
-            color: white;
-            cursor: pointer;
-        }
-        form button:hover {
-            background-color: #218838;
-        }
-        footer {
-            text-align: center;
-            margin-top: 30px;
-            font-size: 14px;
-            color: #777;
-        }
-        footer p {
-            margin: 0;
-        }
-    </style>
-</head>
-<body>
+{% extends "base.html" %}
 
-    <div class="container">
-        <header>
-            <h1>Crear Dojo</h1>
-        </header>
-        
-        <section>
-            <form method="POST">
-                {% csrf_token %}
-                {{ form.as_p }}
-                <button type="submit">Crear Dojo</button>
-            </form>
-        </section>
+{% block title %}Crear Dojo{% endblock %}
+{% block page_title %}Crear Dojo{% endblock %}
+
+{% block content %}
+    <div class="content">
+        <div class="container">
+            <header>
+                <h1>Crear Dojo</h1>
+            </header>
+            
+            <section>
+                <form method="POST">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button type="submit" class="submit-btn">Crear Dojo</button>
+                </form>
+            </section>
+        </div>
     </div>
-
-    <footer>
-        <p>&copy; 2025 SGDP - Sistema de Gestión de Dojos</p>
-    </footer>
-
-</body>
-</html>
+{% endblock %}
