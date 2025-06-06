@@ -5,6 +5,8 @@ __pycache__/
 *.pyo
 *.pyd
 
+# Django settings
+**/settings.py
 # Entornos virtuales
 venv/
 env/
