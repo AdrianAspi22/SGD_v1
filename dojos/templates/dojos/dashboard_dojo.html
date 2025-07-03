@@ -4,14 +4,108 @@
 {% block page_title %}Dashboard de Dojo{% endblock %}
 
 {% block content %}
-<div class="content">
-    <h1>{{ message }}</h1>
+<div class="content container">
+    <h1 class="mb-4">{{ message }}</h1>
 
     {% if dojo %}
-    <div class="info-card">
+    <div class="card mb-4 p-3">
         <h2>{{ dojo.nombre }}</h2>
-        <p><i class="fas fa-map-marker-alt"></i> Ubicación: {{ dojo.ubicacion }}</p>
+        <p><strong>Ubicación:</strong> {{ dojo.ubicacion }}</p>
+    </div>
+
+    <!-- Aprobados vs No Aprobados -->
+    <div class="card mb-4 p-3">
+        <h3>Aprobados vs No Aprobados</h3>
+        <canvas id="chartAprobados"></canvas>
+    </div>
+
+    <!-- Promedio por Instructores -->
+    <div class="card mb-4 p-3">
+        <h3>Promedio de notas por Instructor</h3>
+        <canvas id="chartInstructores"></canvas>
+    </div>
+
+    <!-- Promedio por Alumno -->
+    <div class="card mb-4 p-3">
+        <h3>Promedio de notas por Alumno</h3>
+        <canvas id="chartAlumnos"></canvas>
+    </div>
+
+    <!-- Últimos Grados -->
+    <div class="card mb-4 p-3">
+        <h3>Distribución de Últimos Grados</h3>
+        <canvas id="chartGrados"></canvas>
+    </div>
+    {% else %}
+    <div class="alert alert-warning">
+        {{ message }}
     </div>
     {% endif %}
 </div>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Chart: Aprobados vs No Aprobados
+    const chartAprobados = new Chart(document.getElementById('chartAprobados'), {
+        type: 'pie',
+        data: {
+            labels: ['Aprobados', 'No Aprobados'],
+            datasets: [{
+                data: [{{ aprobados }}, {{ no_aprobados }}],
+                backgroundColor: ['#4CAF50', '#F44336']
+            }]
+        }
+    });
+
+    // Chart: Promedios por Instructor
+    const chartInstructores = new Chart(document.getElementById('chartInstructores'), {
+        type: 'bar',
+        data: {
+            labels: {{ labels_instructores|safe }},
+            datasets: [{
+                label: 'Promedio',
+                data: {{ data_promedios|safe }},
+                backgroundColor: '#2196F3'
+            }]
+        },
+        options: {
+            scales: {
+                y: { beginAtZero: true, max: 20 }
+            }
+        }
+    });
+
+    // Chart: Promedios por Alumno
+    const chartAlumnos = new Chart(document.getElementById('chartAlumnos'), {
+        type: 'bar',
+        data: {
+            labels: {{ labels_alumnos|safe }},
+            datasets: [{
+                label: 'Promedio',
+                data: {{ data_promedios_alumnos|safe }},
+                backgroundColor: '#FFC107'
+            }]
+        },
+        options: {
+            indexAxis: 'y',
+            scales: {
+                x: { beginAtZero: true, max: 20 }
+            }
+        }
+    });
+
+    // Chart: Últimos Grados
+    const chartGrados = new Chart(document.getElementById('chartGrados'), {
+        type: 'doughnut',
+        data: {
+            labels: {{ labels_grados|safe }},
+            datasets: [{
+                label: 'Cantidad',
+                data: {{ data_grados|safe }},
+                backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#8BC34A', '#9C27B0']
+            }]
+        }
+    });
+</script>
 {% endblock %}
