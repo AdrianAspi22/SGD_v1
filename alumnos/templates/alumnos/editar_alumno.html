@@ -1,38 +1,39 @@
-<form id="form-editar-alumno" method="post" action="{% url 'editar_alumno_modal' form.instance.pk %}" style="padding: 20px;">
-    {% csrf_token %}
+{% extends "base.html" %}
 
-    {% for field in form %}
-        <div class="form-group" style="margin-bottom: 15px;">
-            <label for="{{ field.id_for_label }}" style="display: block; margin-bottom: 5px; font-weight: bold; color: #990000;">
-                {{ field.label }}
-            </label>
-            {{ field }}
-            {% if field.errors %}
-                <div class="error" style="color: #990000; font-size: 14px; margin-top: 5px;">
-                    {{ field.errors }}
+{% block title %}Editar Alumno{% endblock %}
+{% block page_title %}Editar Alumno{% endblock %}
+
+{% block content %}
+    <div class="content">
+        <div class="form-container">
+            <form method="post" action="{% url 'editar_alumno' form.instance.pk %}">
+                {% csrf_token %}
+
+                {% for field in form %}
+                    <div class="form-group">
+                        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                        {{ field }}
+                        {% if field.errors %}
+                            <div class="error" style="color: #990000; font-size: 14px; margin-top: 5px;">
+                                {{ field.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+
+                <div class="button-group">
+                    <div class="button-wrapper">
+                        <a href="{% url 'listar_alumnos' %}" class="cancel-btn">
+                            <i class="fas fa-times"></i> Cancelar
+                        </a>
+                    </div>
+                    <div class="button-wrapper">
+                        <button type="submit" class="submit-btn">
+                            <i class="fas fa-check"></i> Guardar Cambios
+                        </button>
+                    </div>
                 </div>
-            {% endif %}
+            </form>
         </div>
-    {% endfor %}
-
-    <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
-        <button type="button" onclick="cerrarModal()" style="
-            background-color: #f5f5f5;
-            color: #333;
-            border: 1px solid #ddd;
-            padding: 10px 18px;
-            border-radius: 4px;
-            cursor: pointer;
-        ">Cancelar</button>
-
-        <button type="submit" style="
-            background-color: #e6b800;
-            color: #000;
-            padding: 10px 18px;
-            font-weight: bold;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        ">Guardar</button>
     </div>
-</form>
+{% endblock %}

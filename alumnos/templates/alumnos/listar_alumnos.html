@@ -82,10 +82,10 @@
                         {% endif %}
                     </td>
                     <td style="padding: 8px; text-align: center; display: flex; justify-content: center; gap: 10px;">
-                        <a href="#" onclick="abrirModal({{ alumno.pk }})" class="icon-btn edit-btn" title="Editar">
+                        <a href="{% url 'editar_alumno' alumno.pk %}" class="icon-btn edit-btn" title="Editar">
                             <i class="fas fa-pen"></i>
                         </a>
-                        <a href="{% url 'eliminar_alumno' alumno.pk %}" class="icon-btn delete-btn" onclick="confirmDeletion(event, this.href)" title="Eliminar">
+                        <a href="{% url 'eliminar_alumno' alumno.pk %}" class="icon-btn delete-btn" onclick="return confirm('¿Estás seguro de que deseas eliminar este alumno?');" title="Eliminar">
                             <i class="fas fa-trash"></i>
                         </a>
                     </td>

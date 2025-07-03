@@ -101,18 +101,14 @@ def crear_alumno(request):
 # Vista para editar un alumno
 @login_required
 def editar_alumno(request, pk):
-    alumno = get_object_or_404(Alumno, pk=pk, dojo=request.user.dojo)
-    if request.method == 'POST':
-        form = AlumnoForm(request.POST, instance=alumno)
-        if form.is_valid():
-            form.save()
-            return JsonResponse({'success': True})  # ✅ respuesta esperada
-        else:
-            return JsonResponse({'success': False, 'errors': form.errors})
-    else:
-        form = AlumnoForm(instance=alumno)
-        return render(request, 'alumnos/editar_alumno_modal.html', {'form': form})
+    alumno = get_object_or_404(Alumno, pk=pk)
+    form = AlumnoForm(request.POST or None, instance=alumno)
 
+    if form.is_valid():
+        form.save()
+        return redirect('listar_alumnos')  # Redirige a la lista de alumnos
+
+    return render(request, 'alumnos/editar_alumno.html', {'form': form, 'alumno': alumno})
 
 # Vista para eliminar un alumno
 @login_required

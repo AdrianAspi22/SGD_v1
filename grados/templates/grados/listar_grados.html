@@ -1,21 +1,45 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Lista de Grados</title>
-</head>
-<body>
-    <h1>Lista de Grados</h1>
-    <a href="{% url 'crear_grado' %}">Crear nuevo grado</a>
-    <ul>
-        {% for grado in grados %}
-            <li>
-                {{ grado }} |
-                <a href="{% url 'editar_grado' grado.pk %}">Editar</a> |
-                <a href="{% url 'eliminar_grado' grado.pk %}">Eliminar</a>
-            </li>
-        {% empty %}
-            <li>No hay grados registrados.</li>
-        {% endfor %}
-    </ul>
-</body>
-</html>
+{% extends "base.html" %}
+
+{% block title %}Lista de Grados{% endblock %}
+{% block page_title %}Lista de Grados{% endblock %}
+
+{% block content %}
+    <div class="content">
+
+        <div class="action-bar">
+            <a href="{% url 'crear_grado' %}">
+                <i class="fas fa-plus"></i> Nuevo Grado
+            </a>
+        </div>
+
+        <ul class="examen-list">
+            {% for grado in grados %}
+                <li class="examen-item">
+                    <div class="examen-header">
+                        <span class="examen-titulo">{{ grado.nombre }}</span>
+                        <span class="examen-fecha">{{ grado.fecha_creacion }}</span>
+                    </div>
+                    <div class="examen-acciones">
+                        <a href="{% url 'editar_grado' grado.id %}">
+                            <i class="fas fa-edit"></i> Editar
+                        </a>
+                        <a href="{% url 'eliminar_grado' grado.id %}">
+                            <i class="fas fa-trash"></i> Eliminar
+                        </a>
+                    </div>
+                </li>
+            {% empty %}
+                <div class="empty-state">
+                    <i class="fas fa-trophy fa-3x" style="color: #ddd; margin-bottom: 15px;"></i>
+                    <p>No hay grados registrados.</p>
+                </div>
+            {% endfor %}
+        </ul>
+
+        <div class="action-bar" style="justify-content: flex-start; margin-top: 20px;">
+            <a href="{% url 'dashboard_dojo' %}">
+                <i class="fas fa-arrow-left"></i> Volver al Inicio
+            </a>
+        </div>
+    </div>
+{% endblock %}
