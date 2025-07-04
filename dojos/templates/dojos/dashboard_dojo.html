@@ -8,34 +8,58 @@
     <h1 class="mb-4">{{ message }}</h1>
 
     {% if dojo %}
+    <!-- Información del Dojo -->
     <div class="card mb-4 p-3">
         <h2>{{ dojo.nombre }}</h2>
         <p><strong>Ubicación:</strong> {{ dojo.ubicacion }}</p>
     </div>
 
-    <!-- Aprobados vs No Aprobados -->
-    <div class="card mb-4 p-3">
-        <h3>Aprobados vs No Aprobados</h3>
-        <canvas id="chartAprobados"></canvas>
+    <!-- Fila de gráficos principales -->
+    <div class="row mb-4">
+        <!-- Gráfico de Aprobados vs No Aprobados -->
+        <div class="col-md-6">
+            <div class="card p-3 h-100">
+                <h3 class="card-title">Aprobados vs No Aprobados</h3>
+                <div class="chart-container">
+                    <canvas id="chartAprobados"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Gráfico de Distribución de Grados -->
+        <div class="col-md-6">
+            <div class="card p-3 h-100">
+                <h3 class="card-title">Distribución de Últimos Grados</h3>
+                <div class="chart-container">
+                    <canvas id="chartGrados"></canvas>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <!-- Promedio por Instructores -->
-    <div class="card mb-4 p-3">
-        <h3>Promedio de notas por Instructor</h3>
-        <canvas id="chartInstructores"></canvas>
+    <!-- Fila de gráficos de barras -->
+    <div class="row mb-4">
+        <!-- Gráfico de Promedios por Instructor -->
+        <div class="col-lg-6">
+            <div class="card p-3 h-100">
+                <h3 class="card-title">Promedio por Instructor</h3>
+                <div class="chart-container-bar">
+                    <canvas id="chartInstructores"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Gráfico de Promedios por Alumno -->
+        <div class="col-lg-6">
+            <div class="card p-3 h-100">
+                <h3 class="card-title">Promedio por Alumno</h3>
+                <div class="chart-container-bar">
+                    <canvas id="chartAlumnos"></canvas>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <!-- Promedio por Alumno -->
-    <div class="card mb-4 p-3">
-        <h3>Promedio de notas por Alumno</h3>
-        <canvas id="chartAlumnos"></canvas>
-    </div>
-
-    <!-- Últimos Grados -->
-    <div class="card mb-4 p-3">
-        <h3>Distribución de Últimos Grados</h3>
-        <canvas id="chartGrados"></canvas>
-    </div>
     {% else %}
     <div class="alert alert-warning">
         {{ message }}
@@ -43,9 +67,76 @@
     {% endif %}
 </div>
 
+<!-- Estilos CSS para los gráficos -->
+<style>
+    .chart-container {
+        position: relative;
+        height: 300px;
+        width: 100%;
+    }
+    
+    .chart-container-bar {
+        position: relative;
+        height: 400px;
+        width: 100%;
+    }
+    
+    .card {
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        border-radius: 8px;
+        border: none;
+    }
+    
+    .card-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin-bottom: 15px;
+        color: #333;
+    }
+    
+    .row {
+        margin-left: -15px;
+        margin-right: -15px;
+    }
+    
+    .col-md-6, .col-lg-6 {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+    
+    @media (max-width: 768px) {
+        .chart-container {
+            height: 250px;
+        }
+        
+        .chart-container-bar {
+            height: 300px;
+        }
+        
+        .col-md-6, .col-lg-6 {
+            margin-bottom: 20px;
+        }
+    }
+</style>
+
 <!-- Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
+    // Configuración responsiva común
+    const commonOptions = {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                position: 'bottom',
+                labels: {
+                    padding: 20,
+                    usePointStyle: true
+                }
+            }
+        }
+    };
+
     // Chart: Aprobados vs No Aprobados
     const chartAprobados = new Chart(document.getElementById('chartAprobados'), {
         type: 'pie',
@@ -53,8 +144,25 @@
             labels: ['Aprobados', 'No Aprobados'],
             datasets: [{
                 data: [{{ aprobados }}, {{ no_aprobados }}],
-                backgroundColor: ['#4CAF50', '#F44336']
+                backgroundColor: ['#4CAF50', '#F44336'],
+                borderWidth: 2,
+                borderColor: '#fff'
             }]
+        },
+        options: {
+            ...commonOptions,
+            plugins: {
+                ...commonOptions.plugins,
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                            const percentage = ((context.parsed * 100) / total).toFixed(1);
+                            return `${context.label}: ${context.parsed} (${percentage}%)`;
+                        }
+                    }
+                }
+            }
         }
     });
 
@@ -66,12 +174,26 @@
             datasets: [{
                 label: 'Promedio',
                 data: {{ data_promedios|safe }},
-                backgroundColor: '#2196F3'
+                backgroundColor: '#2196F3',
+                borderColor: '#1976D2',
+                borderWidth: 1
             }]
         },
         options: {
+            ...commonOptions,
             scales: {
-                y: { beginAtZero: true, max: 20 }
+                y: { 
+                    beginAtZero: true, 
+                    max: 20,
+                    grid: {
+                        color: 'rgba(0,0,0,0.1)'
+                    }
+                },
+                x: {
+                    grid: {
+                        display: false
+                    }
+                }
             }
         }
     });
@@ -84,13 +206,27 @@
             datasets: [{
                 label: 'Promedio',
                 data: {{ data_promedios_alumnos|safe }},
-                backgroundColor: '#FFC107'
+                backgroundColor: '#FFC107',
+                borderColor: '#FFA000',
+                borderWidth: 1
             }]
         },
         options: {
+            ...commonOptions,
             indexAxis: 'y',
             scales: {
-                x: { beginAtZero: true, max: 20 }
+                x: { 
+                    beginAtZero: true, 
+                    max: 20,
+                    grid: {
+                        color: 'rgba(0,0,0,0.1)'
+                    }
+                },
+                y: {
+                    grid: {
+                        display: false
+                    }
+                }
             }
         }
     });
@@ -103,8 +239,26 @@
             datasets: [{
                 label: 'Cantidad',
                 data: {{ data_grados|safe }},
-                backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#8BC34A', '#9C27B0']
+                backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#8BC34A', '#9C27B0'],
+                borderWidth: 2,
+                borderColor: '#fff'
             }]
+        },
+        options: {
+            ...commonOptions,
+            cutout: '50%',
+            plugins: {
+                ...commonOptions.plugins,
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                            const percentage = ((context.parsed * 100) / total).toFixed(1);
+                            return `${context.label}: ${context.parsed} (${percentage}%)`;
+                        }
+                    }
+                }
+            }
         }
     });
 </script>
