@@ -1,0 +1,178 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard de Dojo{% endblock %}
+{% block page_title %}Dashboard de Dojo{% endblock %}
+
+{% block content %}
+<p>Bienvenido al dashboard del dojo.</p>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<div style="display: flex;">
+  
+  <div>
+  <form method="get">
+    <label for="alumnoSelect">Seleccionar Alumno:</label>
+    <select name="alumno_id" id="alumnoSelect" onchange="this.form.submit()">
+      <option value="">-- Selecciona --</option>
+      {% for alumno in alumnos %}
+        <option value="{{ alumno.id }}" {% if alumno.id|stringformat:"s" == alumno_id %}selected{% endif %}>
+          {{ alumno.nombre }} {{ alumno.apellido }}
+        </option>
+      {% endfor %}
+    </select>
+  </form>
+
+  {% if fechas %}
+
+      <div style="width: 120%;">
+          <canvas id="graficoLineaGrados"></canvas>
+      </div>
+    <script>
+      const fechas = {{ fechas|safe }};
+      const niveles = {{ niveles|safe }};
+
+      const ctx = document.getElementById('graficoLineaGrados').getContext('2d');
+      const graficoLinea = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: fechas,
+          datasets: [{
+            label: 'Nivel de Grado',
+            data: niveles,
+            borderColor: 'rgba(75, 192, 192, 1)',
+            fill: false,
+            tension: 0.1
+          }]
+        },
+        options: {
+          scales: {
+            y: {
+              title: { display: true, text: 'Nivel' },
+              reverse: true,
+              ticks: { stepSize: 1 }
+            },
+            x: {
+              title: { display: true, text: 'Fecha de Obtención' }
+            }
+          }
+        }
+      });
+    </script>
+  {% else %}
+    <p>Selecciona un alumno para ver su progreso.</p>
+  {% endif %}
+  </div>
+  <div>
+    <div style="width: 140%;">
+      <canvas id="graficoDistribucionGrados"></canvas>
+    </div>
+
+  <script>
+    const nivelesDistribucion = {{ niveles|safe }};
+    const cantidadesDistribucion = {{ cantidades|safe }};
+
+    const ctx2 = document.getElementById('graficoDistribucionGrados').getContext('2d');
+    const graficoBarra = new Chart(ctx2, {
+      type: 'bar',
+      data: {
+        labels: nivelesDistribucion,
+        datasets: [{
+          label: 'Cantidad de Alumnos',
+          data: cantidadesDistribucion,
+          backgroundColor: 'rgba(54, 162, 235, 0.6)',
+          borderColor: 'rgba(54, 162, 235, 1)',
+          borderWidth: 1
+        }]
+      },
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true,
+            title: { display: true, text: 'Cantidad de alumnos' }
+          },
+          x: {
+            title: { display: true, text: 'Nivel de Grado' }
+          }
+        }
+      }
+    });
+  </script>
+
+  </div>
+</div>
+<div style="display: flex;">
+  <div>
+  <div style="width: 130%;">
+    <canvas id="graficoPromedioTiempoGrados"></canvas>
+  </div>
+  <script>
+  const nivelesTiempo = {{ niveles_tiempo|safe }};
+  const tiemposPromedio = {{ tiempos_promedio|safe }};
+
+  const ctx3 = document.getElementById('graficoPromedioTiempoGrados').getContext('2d');
+  const graficoBarraTiempo = new Chart(ctx3, {
+    type: 'bar',
+    data: {
+      labels: nivelesTiempo,
+      datasets: [{
+        label: 'Promedio de días para alcanzar el grado',
+        data: tiemposPromedio,
+        backgroundColor: 'rgba(255, 206, 86, 0.6)',
+        borderColor: 'rgba(255, 206, 86, 1)',
+        borderWidth: 1
+      }]
+    },
+    options: {
+      scales: {
+        y: {
+          beginAtZero: true,
+          title: { display: true, text: 'Días promedio' }
+        },
+        x: {
+          title: { display: true, text: 'Nivel de Grado' }
+        }
+      }
+    }
+  });
+</script>
+  </div>
+  <div>
+    <div style="width: 130%;">
+      <canvas id="graficoLineasGrados"></canvas>
+    </div>
+    <script>
+  const aniosLineas = {{ anios|safe }};
+  const datasetsLineas = {{ datasets|safe }};
+
+  const ctx5 = document.getElementById('graficoLineasGrados').getContext('2d');
+  const graficoLineas = new Chart(ctx5, {
+    type: 'line',
+    data: {
+      labels: aniosLineas,
+      datasets: datasetsLineas.map(ds => ({
+        label: ds.label,
+        data: ds.data,
+        fill: true,
+        borderColor: `rgba(${Math.floor(Math.random()*255)},${Math.floor(Math.random()*255)},${Math.floor(Math.random()*255)},1)`,
+        backgroundColor: `rgba(${Math.floor(Math.random()*255)},${Math.floor(Math.random()*255)},${Math.floor(Math.random()*255)},0.2)`,
+        tension: 0.3
+      }))
+    },
+    options: {
+      responsive: true,
+      scales: {
+        y: {
+          stacked: true,
+          beginAtZero: true,
+          title: { display: true, text: 'Cantidad de alumnos' }
+        },
+        x: {
+          title: { display: true, text: 'Año' }
+        }
+      }
+    }
+  });
+    </script>
+
+  </div>
+</div>
+{% endblock %}

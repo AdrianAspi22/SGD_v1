@@ -10,8 +10,10 @@ from examenes.models import AlumnoExamen  # importa desde la app examen
 from grados.models import HistorialGrado  # Ajusta si tu app tiene otro nombre
 from django.db.models import Max, Q
 from collections import Counter
-
-
+from alumnos.models import Alumno  # Asegúrate de tener el modelo Alumno
+from django.db.models import F, ExpressionWrapper, DurationField
+from django.db.models import Count, IntegerField
+from django.db.models.functions import ExtractYear
 
 @login_required
 def crear_dojo(request):
@@ -121,6 +123,110 @@ def dashboard_dojo(request):
         }
 
     return render(request, 'dojos/dashboard_dojo.html', context)
+
+
+
+@login_required
+def dashboard_grado(request):
+    alumnos = Alumno.objects.filter(estado='Activo')
+
+    alumno_id = request.GET.get('alumno_id')
+    historial = []
+
+    if alumno_id:
+        historial = HistorialGrado.objects.filter(
+            alumno_id=alumno_id
+        ).select_related('grado').order_by('fecha_obtencion')
+
+    fechas = [registro.fecha_obtencion.strftime('%Y-%m-%d') for registro in historial]
+    niveles = [registro.grado.nivel for registro in historial]
+
+    #segundo grafico
+
+    ultimos_grados = HistorialGrado.objects.filter(
+        alumno__in=alumnos
+    ).values('alumno').annotate(
+        ultima_fecha=Max('fecha_obtencion')
+    )
+
+    grados_alumnos = HistorialGrado.objects.filter(
+        alumno__in=alumnos,
+        fecha_obtencion__in=[g['ultima_fecha'] for g in ultimos_grados]
+    ).select_related('grado')
+
+    from collections import Counter
+    conteo_grados = Counter([registro.grado.nivel for registro in grados_alumnos])
+
+    niveles = list(conteo_grados.keys())
+    cantidades = list(conteo_grados.values())
+
+    #tercer grafico
+    # historial con diferencia de tiempo
+    historial = HistorialGrado.objects.filter(
+        alumno__in=alumnos,
+        fecha_obtencion__gte=F('alumno__create_at')  # Solo grados después de inscripción
+    ).select_related('alumno', 'grado').annotate(
+        dias_para_grado=ExpressionWrapper(
+            F('fecha_obtencion') - F('alumno__create_at'),
+            output_field=DurationField()
+        )
+    )
+
+    from collections import defaultdict
+    conteo_promedios = defaultdict(list)
+
+    for registro in historial:
+        conteo_promedios[registro.grado.nivel].append(registro.dias_para_grado.days)
+
+    niveles_tiempo = []
+    tiempos_promedio = []
+
+    for nivel, tiempos in conteo_promedios.items():
+        promedio = sum(tiempos) / len(tiempos)
+        niveles_tiempo.append(nivel)
+        tiempos_promedio.append(round(promedio, 1))
+
+    #cuarto grafico
+    historial_4 = HistorialGrado.objects.filter(
+        alumno__in=alumnos
+    ).annotate(
+        anio=ExtractYear(F('fecha_obtencion'), function='YEAR', output_field=IntegerField())
+    ).values('anio', 'grado__nivel').annotate(
+        cantidad=Count('id')
+    ).order_by('anio', 'grado__nivel')
+
+    from collections import defaultdict
+
+    datos_por_anio = defaultdict(lambda: defaultdict(int))
+
+    for registro in historial_4:
+        anio = registro['anio']
+        nivel = registro['grado__nivel']
+        cantidad = registro['cantidad']
+        datos_por_anio[anio][nivel] = cantidad
+
+    anios = list(datos_por_anio.keys())
+    niveles = sorted({nivel for anio_data in datos_por_anio.values() for nivel in anio_data.keys()})
+
+    datasets = []
+    for nivel in niveles:
+        data = [datos_por_anio[anio].get(nivel, 0) for anio in anios]
+        datasets.append({'label': f'Grado {nivel}', 'data': data})
+
+    return render(request, 'dojos/dashboard_grado.html', {
+        'alumnos': alumnos,
+        'fechas': fechas,
+        'niveles': niveles,
+        'alumno_id': alumno_id,
+        'niveles': niveles,
+        'cantidades': cantidades,
+        'niveles_tiempo': niveles_tiempo,
+        'tiempos_promedio': tiempos_promedio,
+        'anios': anios,
+        'datasets': datasets,
+    })
+
+
 
 @login_required
 def dashboard_general(request):

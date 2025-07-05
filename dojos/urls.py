@@ -6,6 +6,7 @@ from alumnos import views as alumnos_views  # Importamos las vistas de la app al
 urlpatterns = [
     path('crear/', views.crear_dojo, name='crear_dojo'),
     path('dashboard/', views.dashboard_dojo, name='dashboard'),
+    path('dashboard_grado/', views.dashboard_grado, name='dashboard_grado'),
         # URLs para gestionar alumnos (en la app alumnos)
     path('alumnos/', alumnos_views.listar_alumnos, name='listar_alumnos'),
     path('alumnos/crear/', alumnos_views.crear_alumno, name='crear_alumno'),

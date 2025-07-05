@@ -12,6 +12,11 @@
     <div class="card mb-4 p-3">
         <h2>{{ dojo.nombre }}</h2>
         <p><strong>Ubicación:</strong> {{ dojo.ubicacion }}</p>
+        <button href="{% url 'dashboard_grado' %}"></button>
+    </div>
+
+    <div>
+        <a href="{% url 'dashboard_grado' %}" >grados</a>
     </div>
 
     <!-- Fila de gráficos principales -->
